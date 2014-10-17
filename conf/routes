@@ -1,0 +1,17 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+
+POST    /geotag                     controllers.Application.addGeotag()
+
+GET     /geotags                    controllers.Application.getAllGeotags()
+
+POST     /delete                     controllers.Application.deleteGeotag()
+
+GET      /closest                   controllers.Application.getClosest()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

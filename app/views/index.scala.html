@@ -1,0 +1,18 @@
+@(message: String)
+
+@main("Welcome to Play") {
+
+        <form action="@routes.Application.addGeotag()" method="POST">
+            <input type="text" name="lat"/>
+            <input type="text" name="lon"/>
+            <input type="text" name="usuarios"/>
+            <input type="text" name="incapacidad"/>
+            <button>add geo</button>
+        </form>
+        <form action="@routes.Application.deleteGeotag()" method="POST">
+            <input type="text" name="lat"/>
+            <input type="text" name="lon"/>
+            <button>remove geo</button>
+        </form>
+
+}
