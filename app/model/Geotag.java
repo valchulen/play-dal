@@ -23,6 +23,8 @@ public class Geotag extends Model implements Comparable {
 
     @ElementCollection
     public List<String> usuarios;
+    @ElementCollection
+    public List<String> photoNames;
 
     public String incapacidad;
     public int importancia = 0;

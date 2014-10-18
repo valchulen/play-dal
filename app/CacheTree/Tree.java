@@ -56,6 +56,11 @@ public class Tree {
         _addGeotag(0, root, g);
     }
 
+    public Geotag findById(long id){
+        Geotag g = Geotag.find.byId(id);
+        return getClosest(g.lat, g.lon);
+    }
+
     public boolean indexed(float lat, float lon) {
         return _indexed(0, root, lat, lon);
     }

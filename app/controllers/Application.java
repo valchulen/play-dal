@@ -8,6 +8,7 @@ import play.mvc.*;
 
 import views.html.*;
 
+import java.io.File;
 import java.util.List;
 
 import static play.libs.Json.toJson;
@@ -25,7 +26,7 @@ public class Application extends Controller {
         tree.addGeotag(g);
         g.save();
         Logger.debug("SAVED");
-        return redirect(routes.Application.index());
+        return ok(toJson(g));
     }
 
     public static Result getAllGeotags() {
@@ -44,7 +45,7 @@ public class Application extends Controller {
             Geotag g = Geotag.find.where().eq("lat", lat).eq("lon", lon).findUnique();
             g.delete();
             Logger.debug("DELETED");
-            return ok(toJson("deleted"));
+            return ok("deleted");
         }
         return notFound();
     }
@@ -56,6 +57,23 @@ public class Application extends Controller {
         if (lat==0.0f || lon == 0.0f)
             return badRequest();
         return ok(toJson(tree.getClosest(lat, lon)));
+    }
+
+    public static Result uploadPic (){
+        long id = 0;
+        id = Long.parseLong(Form.form().bindFromRequest().get("id"));
+        if (id == 0)
+            return badRequest();
+        Geotag g = tree.findById(id);
+        if (g == null)
+            return badRequest("bad id");
+        String filename = String.valueOf(g.photoNames.size()+1);
+
+        File file = request().body().asRaw().asFile();
+        if (file == null)
+            return badRequest();
+        file.renameTo(new File(Play.application().path().getPath()+"/public/images", filename));
+        return ok("uploaded");
     }
 
 }

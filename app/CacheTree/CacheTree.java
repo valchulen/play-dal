@@ -12,6 +12,13 @@ public class CacheTree {
 
     }
 
+    public Geotag findById(long id) {
+        if (cache != null)
+            return cache.findById(id);
+        else
+            return null;
+    }
+
     public void addGeotag (Geotag g) {
         if (cache == null)
             construct(g);
