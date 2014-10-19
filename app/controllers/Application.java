@@ -23,14 +23,30 @@ public class Application extends Controller {
 
     public static Result addGeotag() {
         Geotag g = Form.form(Geotag.class).bindFromRequest().get();
-        if (tree.indexed(g)){
+        if (g == null)
+            return badRequest();
 
+        if (tree.indexedByPos(g)){
+            Geotag geoT = tree.findByPos(g.lat, g.lon);
+            Geotag realGeo = Geotag.find.byId(geoT.id);
+
+            realGeo.importancia++;
+            geoT.importancia++;
+
+            realGeo.usuarios.add(g.usuarios.get(0));
+            geoT.usuarios.add(g.usuarios.get(0));
+
+            //concatenar incapacidad
+
+            realGeo.save();
+
+            Logger.debug("UPDATED");
         } else {
             tree.addGeotag(g);
             g.save();
-        }
 
-        Logger.debug("SAVED");
+            Logger.debug("SAVED");
+        }
         return ok(toJson(g));
     }
 
@@ -64,7 +80,7 @@ public class Application extends Controller {
         return ok(toJson(tree.getClosest(lat, lon)));
     }
 
-    public static Result uploadPic (){
+    public static Result uploadPic(){
         long id = 0;
         id = Long.parseLong(Form.form().bindFromRequest().get("id"));
         if (id == 0)

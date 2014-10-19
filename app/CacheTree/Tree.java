@@ -58,6 +58,8 @@ public class Tree {
 
     public Geotag findById(long id){
         Geotag g = Geotag.find.byId(id);
+        if (g == null)
+            return null;
         return getClosest(g.lat, g.lon);
     }
 
