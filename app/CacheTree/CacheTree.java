@@ -41,6 +41,13 @@ public class CacheTree {
             return null;
     }
 
+    public boolean indexed(Geotag g){
+        if (cache!= null)
+            return cache.indexed(g.lat, g.lon);
+        else
+            return false;
+    }
+
     private void construct (Geotag g) {
         List<Geotag> lest = Geotag.find.all();
         if(lest!=null){

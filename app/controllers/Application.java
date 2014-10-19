@@ -23,8 +23,13 @@ public class Application extends Controller {
 
     public static Result addGeotag() {
         Geotag g = Form.form(Geotag.class).bindFromRequest().get();
-        tree.addGeotag(g);
-        g.save();
+        if (tree.indexed(g)){
+
+        } else {
+            tree.addGeotag(g);
+            g.save();
+        }
+
         Logger.debug("SAVED");
         return ok(toJson(g));
     }
