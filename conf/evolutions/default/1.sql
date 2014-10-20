@@ -7,6 +7,7 @@ create table geotag (
   id                        bigint not null,
   lat                       float,
   lon                       float,
+  usuarios                  varchar(255),
   incapacidad               varchar(255),
   importancia               integer,
   constraint pk_geotag primary key (id))

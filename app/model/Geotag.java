@@ -1,6 +1,5 @@
 package model;
 
-import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
 import javax.persistence.*;
@@ -21,21 +20,26 @@ public class Geotag extends Model implements Comparable {
     public float lat;
     public float lon;
 
-    @ElementCollection
-    public List<String> usuarios;
-    @ElementCollection
-    public List<String> photoNames;
+    //@ElementCollection(targetClass = String.class)
+    //@Column(name = "string", nullable = false)
+    public String usuarios="";
+    @ElementCollection(targetClass = String.class)
+    @Column(name = "string", nullable = false)
+    public List<String> photoNames = new ArrayList<String>();
 
     public String incapacidad;
-    public int importancia = 0;
+    public int importancia = 1;
 
     public static Finder<Long, Geotag> find = new Finder<Long, Geotag>(Long.class, Geotag.class);
 
-    public Geotag (String lat, String lon,  String usuarios, String incapacidad) {
-        setLat(lat);
-        setLon(lon);
+    public Geotag (float lat, float lon,  String usuario, String incapacidad) {
+        //setLat(lat);
+        //setLon(lon);
 
-        this.usuarios.add(usuarios);
+        this.lat = lat;
+        this.lon = lon;
+
+        this.usuarios+=usuario;
         this.incapacidad = incapacidad;
     }
 

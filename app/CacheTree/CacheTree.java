@@ -51,9 +51,9 @@ public class CacheTree {
         return null;
     }
 
-    public boolean indexedByPos(Geotag g){
+    public boolean indexedByPos(float lat, float lon){
         if (cache!= null)
-            return cache.indexed(g.lat, g.lon);
+            return cache.indexed(lat, lon);
         else
             return false;
     }

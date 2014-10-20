@@ -2,6 +2,7 @@ package controllers;
 
 import CacheTree.CacheTree;
 import model.Geotag;
+import model.GeotagUnico;
 import play.*;
 import play.data.Form;
 import play.mvc.*;
@@ -9,6 +10,7 @@ import play.mvc.*;
 import views.html.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static play.libs.Json.toJson;
@@ -22,19 +24,24 @@ public class Application extends Controller {
     }
 
     public static Result addGeotag() {
-        Geotag g = Form.form(Geotag.class).bindFromRequest().get();
-        if (g == null)
+        GeotagUnico g = Form.form(GeotagUnico.class).bindFromRequest().get();
+
+        if (g == null || g.usuario.isEmpty())
             return badRequest();
 
-        if (tree.indexedByPos(g)){
-            Geotag geoT = tree.findByPos(g.lat, g.lon);
+        if (tree.indexedByPos(g.lat, g.lon)){
+            Geotag geoT = tree.getClosest(g.lat, g.lon);
+
             Geotag realGeo = Geotag.find.byId(geoT.id);
+
+            if (realGeo.usuarios != null && g.usuario != null)
+                return badRequest();
 
             realGeo.importancia++;
             geoT.importancia++;
 
-            realGeo.usuarios.add(g.usuarios.get(0));
-            geoT.usuarios.add(g.usuarios.get(0));
+            realGeo.usuarios += " " + g.usuario;
+            geoT.usuarios += " " + g.usuario;
 
             //concatenar incapacidad
 
@@ -42,8 +49,9 @@ public class Application extends Controller {
 
             Logger.debug("UPDATED");
         } else {
-            tree.addGeotag(g);
-            g.save();
+            Geotag geo = new Geotag(g.lat, g.lon, g.usuario, g.incapacidad);
+            geo.save();
+            tree.addGeotag(geo);
 
             Logger.debug("SAVED");
         }
