@@ -20,9 +20,8 @@ public class Geotag extends Model implements Comparable {
     public float lat;
     public float lon;
 
-    //@ElementCollection(targetClass = String.class)
-    //@Column(name = "string", nullable = false)
     public String usuarios="";
+
     @ElementCollection(targetClass = String.class)
     @Column(name = "string", nullable = false)
     public List<String> photoNames = new ArrayList<String>();

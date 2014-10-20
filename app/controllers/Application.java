@@ -30,11 +30,12 @@ public class Application extends Controller {
             return badRequest();
 
         if (tree.indexedByPos(g.lat, g.lon)){
+
             Geotag geoT = tree.getClosest(g.lat, g.lon);
 
             Geotag realGeo = Geotag.find.byId(geoT.id);
 
-            if (realGeo.usuarios != null && g.usuario != null)
+            if (realGeo.usuarios == null && g.usuario == null)
                 return badRequest();
 
             realGeo.importancia++;
@@ -45,7 +46,7 @@ public class Application extends Controller {
 
             //concatenar incapacidad
 
-            realGeo.save();
+            realGeo.update();
 
             Logger.debug("UPDATED");
         } else {
