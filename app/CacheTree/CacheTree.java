@@ -7,10 +7,29 @@ import java.util.List;
 
 public class CacheTree {
     float ALLOWED_DIFFERENCE = 0.0001f;
+    private final static int REBUILD_COUNT = 1000000;
+    private static int element_count = 0;
     private Tree cache = null;
 
     public CacheTree () {
 
+    }
+
+    private void reconstructIfNecessary () {
+        if (element_count >= REBUILD_COUNT) {
+            Geotag[] arr = null;
+            Geotag.find.all().toArray(arr);
+            cache = new Tree(arr);
+            element_count = 0;
+        }
+        element_count++;
+    }
+
+    public List<Geotag> rangeSearch (float minlat, float minlon, float maxlat, float maxlon) {
+        if (cache != null)
+            return cache.rangeSearch(minlat, minlon, maxlat, maxlon);
+        else
+            return null;
     }
 
     public Geotag findById(long id) {
@@ -26,6 +45,7 @@ public class CacheTree {
         else
             cache.addGeotag(g);
         Logger.debug("ADDED TO TREE");
+        reconstructIfNecessary();
     }
 
     public boolean delete (float lat, float lon) {

@@ -15,5 +15,7 @@ GET      /closest                   controllers.Application.getClosest()
 
 POST    /picupload                  controllers.Application.uploadPic()
 
+GET     /range                      controllers.Application.rangeSearch()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

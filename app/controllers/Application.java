@@ -82,7 +82,7 @@ public class Application extends Controller {
         return notFound();
     }
 
-    public static Result getClosest(){
+    public static Result getClosest() {
         float lat = 0.0f, lon = 0.0f;
         lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
         lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
@@ -91,7 +91,7 @@ public class Application extends Controller {
         return ok(toJson(tree.getClosest(lat, lon)));
     }
 
-    public static Result uploadPic(){
+    public static Result uploadPic() {
         long id = 0;
         id = Long.parseLong(Form.form().bindFromRequest().get("id"));
         if (id == 0)
@@ -106,6 +106,18 @@ public class Application extends Controller {
             return badRequest();
         file.renameTo(new File(Play.application().path().getPath()+"/public/images", filename));
         return ok("uploaded");
+    }
+
+    public static Result rangeSearch() {
+        float minlat = 0.0f, minlon = 0.0f; float maxlat = 0.0f, maxlon = 0.0f;
+        minlat = Float.parseFloat(Form.form().bindFromRequest().get("minlat"));
+        minlon = Float.parseFloat(Form.form().bindFromRequest().get("minlon"));
+        maxlat = Float.parseFloat(Form.form().bindFromRequest().get("maxlat"));
+        maxlon = Float.parseFloat(Form.form().bindFromRequest().get("maxlon"));
+        if (minlat == 0.0f || minlon == 0.0f || maxlat == 0.0f || maxlon == 0.0f)
+            return badRequest();
+
+        return ok(toJson(tree.rangeSearch(minlat, minlon, maxlat, maxlon)));
     }
 
 }
