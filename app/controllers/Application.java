@@ -49,14 +49,16 @@ public class Application extends Controller {
             realGeo.update();
 
             Logger.debug("UPDATED");
+
+            return ok(toJson(realGeo));
         } else {
             Geotag geo = new Geotag(g.lat, g.lon, g.usuario, g.incapacidad);
             geo.save();
             tree.addGeotag(geo);
 
             Logger.debug("SAVED");
+            return ok(toJson(geo));
         }
-        return ok(toJson(g));
     }
 
     public static Result getAllGeotags() {
