@@ -4,7 +4,10 @@ import play.db.ebean.Model;
 
 import javax.persistence.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static play.data.validation.Constraints.Required;
@@ -48,6 +51,10 @@ public class Geotag extends Model implements Comparable {
 
     public void setLon(String lon) {
         this.lon = Float.parseFloat(lon);
+    }
+
+    public List<String> getUsuarios () {
+        return Arrays.asList(usuarios.split(";"));
     }
 
     @Override

@@ -41,8 +41,8 @@ public class Application extends Controller {
             realGeo.importancia++;
             geoT.importancia++;
 
-            realGeo.usuarios += " " + g.usuario;
-            geoT.usuarios += " " + g.usuario;
+            realGeo.usuarios += ";" + g.usuario;
+            geoT.usuarios += ";" + g.usuario;
 
             //concatenar incapacidad
 
