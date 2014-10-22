@@ -9,7 +9,7 @@ POST    /geotag                     controllers.Application.addGeotag()
 
 GET     /geotags                    controllers.Application.getAllGeotags()
 
-POST     /delete                     controllers.Application.deleteGeotag()
+GET     /delete                     controllers.Application.deleteGeotag()
 
 GET      /closest                   controllers.Application.getClosest()
 
