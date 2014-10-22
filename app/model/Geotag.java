@@ -25,9 +25,8 @@ public class Geotag extends Model implements Comparable {
 
     public String usuarios="";
 
-    @ElementCollection(targetClass = String.class)
-    @Column(name = "string", nullable = false)
-    public List<String> photoNames = new ArrayList<String>();
+
+    public String photoNames="";
 
     public String incapacidad;
     public int importancia = 1;
@@ -55,6 +54,10 @@ public class Geotag extends Model implements Comparable {
 
     public List<String> getUsuarios () {
         return Arrays.asList(usuarios.split(";"));
+    }
+
+    public List<String> getPhotoNames () {
+        return Arrays.asList(photoNames.split(";"));
     }
 
     @Override

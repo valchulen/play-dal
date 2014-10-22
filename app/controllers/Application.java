@@ -99,7 +99,7 @@ public class Application extends Controller {
         Geotag g = tree.findById(id);
         if (g == null)
             return badRequest("bad id");
-        String filename = String.valueOf(g.photoNames.size()+1);
+        String filename = String.valueOf(g.getPhotoNames().size()+1);
 
         File file = request().body().asRaw().asFile();
         if (file == null)
