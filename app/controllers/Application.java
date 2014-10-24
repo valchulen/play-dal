@@ -88,7 +88,10 @@ public class Application extends Controller {
         lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
         if (lat==0.0f || lon == 0.0f)
             return badRequest();
-        return ok(toJson(tree.getClosest(lat, lon)));
+        Geotag g = tree.getClosest(lat, lon);
+        if (g!= null)
+            return ok(toJson(g));
+        return ok("not found");
     }
 
     public static Result uploadPic() {
