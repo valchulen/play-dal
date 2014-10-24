@@ -117,7 +117,10 @@ public class Application extends Controller {
         if (minlat == 0.0f || minlon == 0.0f || maxlat == 0.0f || maxlon == 0.0f)
             return badRequest();
 
-        return ok(toJson(tree.rangeSearch(minlat, minlon, maxlat, maxlon)));
+        List<Geotag> lis = tree.rangeSearch(minlat, minlon, maxlat, maxlon);
+        if (lis != null)
+            return ok(toJson(lis));
+        return ok("nada");
     }
 
 }
