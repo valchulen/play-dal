@@ -72,8 +72,13 @@ public class Tree {
     }
 
     public Geotag getClosest (float lat, float lon){
-        minP = root.getGeo();
-        minDistance = distance(root.getGeo(), lat, lon);
+        if (root.exists) {
+            minP = root.getGeo();
+            minDistance = distance(root.getGeo(), lat, lon);
+        } else {
+            minP = null;
+            minDistance = 100000000000f;
+        }
         _close(0, root, lat, lon);
         return minP;
     }
