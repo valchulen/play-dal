@@ -41,22 +41,19 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var maxlat = (bounds.getNorthEast()).lat();
   var maxlng = (bounds.getNorthEast()).lng();
 
-var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1}] ';
-  //var res = requestTags(minlat, maxlat, minlng, maxlng);
+  var res = requestTags(minlat, maxlat, minlng, maxlng);
     console.log(res);
 
   var obj = JSON.parse(res);
   var tags = [];
-  var hi = [];
 
-  console.log(obj[0].lat);
+  console.log(obj.length);
 
   for (var i = 0; i < obj.length; i++) {
     tags[tags.length] = new google.maps.LatLng(obj[i].lat, obj[i].lon);
-    hi[hi.length] = i + "s";
   };
 
-  console.log(hi[0]);
+  console.log(tags.length);
 
   LoadInfoWindows(tags, map, obj); 
   //console.log(cen.lat() + ", " + cen.lng());
@@ -76,12 +73,12 @@ function LoadInfoWindows (TagPoints, map, obj)
 
   for(i = 0; i < TagPoints.length; i++)
   {
-    if (obj[i].usuarios.length < 2) 
+    if (obj[i].importancia < 2) 
     {
-      fill = '<div style ="height: px"> Tageado por <strong>' + obj[i].usuarios[0] + '</strong></div>';
+      fill = '<div style ="width: auto-size; height: auto-size"> Tageado por <strong>' + obj[i].usuarios[0] + '</strong></div>';
     }else
     {
-      fill = "Tageado por " + obj[i].usuarios[0] + " y otros " + (obj[i].usuarios.length - 1)
+      fill = "Tageado por " + obj[i].usuarios[0] + " y otros " + (obj[i].importancia - 1)
     }
     var coordInfoWindow = new google.maps.InfoWindow({maxHeight:200});
     coordInfoWindow.setContent(fill);
