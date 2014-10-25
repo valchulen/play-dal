@@ -48,7 +48,7 @@ public class Application extends Controller {
 
             realGeo.update();
 
-            Logger.info("UPDATED");
+            Logger.debug("UPDATED");
 
             return ok(toJson(realGeo));
         } else {
@@ -56,13 +56,14 @@ public class Application extends Controller {
             geo.save();
             tree.addGeotag(geo);
 
-            Logger.info("SAVED");
+            Logger.debug("SAVED");
             return ok(toJson(geo));
         }
     }
 
     public static Result getAllGeotags() {
         List<Geotag>  geotags = Geotag.find.all();
+        Logger.debug("GETTING ALL GEOS");
         return ok(toJson(geotags));
     }
 
@@ -70,6 +71,7 @@ public class Application extends Controller {
         float lat = 0.0f, lon = 0.0f;
         lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
         lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
+        Logger.debug("DELETE FOR LAT" + lat + " AND LON " + lon);
         if (lat==0.0f || lon == 0.0f)
             return badRequest();
         if(tree.delete(lat, lon)) {
@@ -79,6 +81,7 @@ public class Application extends Controller {
             Logger.debug("DELETED");
             return ok("deleted");
         }
+        Logger.debug("NOT FOUND");
         return notFound();
     }
 
@@ -89,8 +92,11 @@ public class Application extends Controller {
         if (lat==0.0f || lon == 0.0f)
             return badRequest();
         Geotag g = tree.getClosest(lat, lon);
-        if (g!= null)
+        if (g != null) {
+            Logger.debug("FOUND");
             return ok(toJson(g));
+        }
+        Logger.debug("NOT FOUND");
         return ok("not found");
     }
 
@@ -119,10 +125,13 @@ public class Application extends Controller {
         maxlon = Float.parseFloat(Form.form().bindFromRequest().get("maxlon"));
         if (minlat == 0.0f || minlon == 0.0f || maxlat == 0.0f || maxlon == 0.0f)
             return badRequest();
-
+        Logger.debug("RANGE SEARCHING minlat "+ minlat +" minlon "+ minlon +" maxlat "+ maxlat +" maxlon "+maxlon);
         List<Geotag> lis = tree.rangeSearch(minlat, minlon, maxlat, maxlon);
-        if (lis != null)
+        if (lis != null) {
+            Logger.debug("FOUND");
             return ok(toJson(lis));
+        }
+        Logger.debug("NOT FOUND");
         return ok("nothing found");
     }
 
