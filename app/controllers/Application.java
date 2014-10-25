@@ -123,7 +123,7 @@ public class Application extends Controller {
         List<Geotag> lis = tree.rangeSearch(minlat, minlon, maxlat, maxlon);
         if (lis != null)
             return ok(toJson(lis));
-        return ok("nada");
+        return ok("nothing found");
     }
 
 }
