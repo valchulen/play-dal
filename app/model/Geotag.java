@@ -25,7 +25,6 @@ public class Geotag extends Model implements Comparable {
 
     public String usuarios="";
 
-
     public String photoNames="";
 
     public String incapacidad;
@@ -33,7 +32,7 @@ public class Geotag extends Model implements Comparable {
 
     public static Finder<Long, Geotag> find = new Finder<Long, Geotag>(Long.class, Geotag.class);
 
-    public Geotag (float lat, float lon,  String usuario, String incapacidad) {
+    public Geotag (float lat, float lon,  String usuario) {
         //setLat(lat);
         //setLon(lon);
 
@@ -41,7 +40,22 @@ public class Geotag extends Model implements Comparable {
         this.lon = lon;
 
         this.usuarios+=usuario;
-        this.incapacidad = incapacidad;
+        this.incapacidad = "audi;|;moto;|;inte;|;visu;|;visc;|;acon;|";
+    }
+
+    public void concatIncapacidad (String key, String value) {
+
+        String[] vals = incapacidad.split(";");
+        String res = "";
+
+        for(int i = 0; i < vals.length; i++) {
+            if (vals[i].equals(key)) {
+                if ((vals[i+1].equals("|")) || (vals[i+1].equals("+") && value.equals("-")))
+                        vals[i+1] = value;
+            }
+            res += vals[i] + ";";
+        }
+        incapacidad = res;
     }
 
     public void setLat(String lat) {

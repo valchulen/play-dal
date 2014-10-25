@@ -44,7 +44,9 @@ public class Application extends Controller {
             realGeo.usuarios += ";" + g.usuario;
             geoT.usuarios += ";" + g.usuario;
 
-            //concatenar incapacidad
+            String[] vals = g.incapacidad.split(";");
+            realGeo.concatIncapacidad(vals[0], vals[1]);
+            geoT.concatIncapacidad(vals[0], vals[1]);
 
             realGeo.update();
 
@@ -52,7 +54,11 @@ public class Application extends Controller {
 
             return ok(toJson(realGeo));
         } else {
-            Geotag geo = new Geotag(g.lat, g.lon, g.usuario, g.incapacidad);
+            Geotag geo = new Geotag(g.lat, g.lon, g.usuario);
+
+            String[] vals = g.incapacidad.split(";");
+            geo.concatIncapacidad(vals[0], vals[1]);
+
             geo.save();
             tree.addGeotag(geo);
 
@@ -134,5 +140,7 @@ public class Application extends Controller {
         Logger.debug("NOT FOUND");
         return ok("nothing found");
     }
+
+
 
 }

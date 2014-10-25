@@ -230,7 +230,6 @@ public class Tree {
 
         if (nodes.length == 1) {
             n = new Node(nodes[0]);
-            System.out.println("try create node "+n.toString());
         }
         else if (nodes.length > 1){
             Geotag[] lefts, rights;
