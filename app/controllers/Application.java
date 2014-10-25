@@ -26,7 +26,15 @@ public class Application extends Controller {
     public static Result addGeotag() {
         GeotagUnico g = Form.form(GeotagUnico.class).bindFromRequest().get();
 
-        if (g == null || g.usuario.isEmpty())
+        String[] vals = g.incapacidad.split(";");
+
+        boolean puede = true;
+        if (!(vals[0]=="audi" || vals[0]=="moto" || vals[0]=="inte" || vals[0]=="visu" || vals[0]=="visc" || vals[0]=="acon"))
+            puede = false;
+        if (!(vals[1]=="|" || vals[1]=="+" || vals[1]==""))
+            puede = false;
+
+        if (g == null || g.usuario.isEmpty() || puede)
             return badRequest();
 
         if (tree.indexedByPos(g.lat, g.lon)){
@@ -44,7 +52,7 @@ public class Application extends Controller {
             realGeo.usuarios += ";" + g.usuario;
             geoT.usuarios += ";" + g.usuario;
 
-            String[] vals = g.incapacidad.split(";");
+
             realGeo.concatIncapacidad(vals[0], vals[1]);
             geoT.concatIncapacidad(vals[0], vals[1]);
 
@@ -56,7 +64,6 @@ public class Application extends Controller {
         } else {
             Geotag geo = new Geotag(g.lat, g.lon, g.usuario);
 
-            String[] vals = g.incapacidad.split(";");
             geo.concatIncapacidad(vals[0], vals[1]);
 
             geo.save();
@@ -75,8 +82,12 @@ public class Application extends Controller {
 
     public static Result deleteGeotag() {
         float lat = 0.0f, lon = 0.0f;
-        lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
-        lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
+        try {
+            lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
+            lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
+        } catch (Exception e) {
+            return badRequest();
+        }
         Logger.debug("DELETE FOR LAT" + lat + " AND LON " + lon);
         if (lat==0.0f || lon == 0.0f)
             return badRequest();
@@ -93,8 +104,12 @@ public class Application extends Controller {
 
     public static Result getClosest() {
         float lat = 0.0f, lon = 0.0f;
-        lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
-        lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
+        try {
+            lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
+            lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
+        } catch (Exception e) {
+            return badRequest();
+        }
         if (lat==0.0f || lon == 0.0f)
             return badRequest();
         Geotag g = tree.getClosest(lat, lon);
@@ -108,7 +123,11 @@ public class Application extends Controller {
 
     public static Result uploadPic() {
         long id = 0;
-        id = Long.parseLong(Form.form().bindFromRequest().get("id"));
+        try {
+            id = Long.parseLong(Form.form().bindFromRequest().get("id"));
+        } catch (Exception e) {
+            return badRequest();
+        }
         if (id == 0)
             return badRequest();
         Geotag g = tree.findById(id);
@@ -125,12 +144,14 @@ public class Application extends Controller {
 
     public static Result rangeSearch() {
         float minlat = 0.0f, minlon = 0.0f; float maxlat = 0.0f, maxlon = 0.0f;
-        minlat = Float.parseFloat(Form.form().bindFromRequest().get("minlat"));
-        minlon = Float.parseFloat(Form.form().bindFromRequest().get("minlon"));
-        maxlat = Float.parseFloat(Form.form().bindFromRequest().get("maxlat"));
-        maxlon = Float.parseFloat(Form.form().bindFromRequest().get("maxlon"));
-        if (minlat == 0.0f || minlon == 0.0f || maxlat == 0.0f || maxlon == 0.0f)
+        try {
+            minlat = Float.parseFloat(Form.form().bindFromRequest().get("minlat"));
+            minlon = Float.parseFloat(Form.form().bindFromRequest().get("minlon"));
+            maxlat = Float.parseFloat(Form.form().bindFromRequest().get("maxlat"));
+            maxlon = Float.parseFloat(Form.form().bindFromRequest().get("maxlon"));
+        } catch (Exception e) {
             return badRequest();
+        }
         Logger.debug("RANGE SEARCHING minlat "+ minlat +" minlon "+ minlon +" maxlat "+ maxlat +" maxlon "+maxlon);
         List<Geotag> lis = tree.rangeSearch(minlat, minlon, maxlat, maxlon);
         if (lis != null) {
