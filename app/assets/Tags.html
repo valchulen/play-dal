@@ -107,7 +107,7 @@ function CenterFromPoints (Points)
 function requestTags(minlat, maxlat, minlng, maxlng)
 {
 
-    var theUrl = "http://ruedassinfronteras.herokuapp.com/range?minlat=" + minlat + "&maxlat=" + maxlat+ "&minlon=" + minlng + "&maxlon=" + maxlng;
+    var theUrl = "/range?minlat=" + minlat + "&maxlat=" + maxlat+ "&minlon=" + minlng + "&maxlon=" + maxlng;
     console.log(theUrl);
 
     var xmlHttp = new XMLHttpRequest();
