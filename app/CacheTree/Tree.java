@@ -86,7 +86,10 @@ public class Tree {
     public List<Geotag> rangeSearch(float minLat, float minLon, float maxLat, float maxLon) {
         found = new ArrayList<Geotag>();
         _rangeSearch(0, root, minLat, minLon, maxLat, maxLon);
-        return found;
+        if (found.size() > 0)
+            return found;
+        else
+            return null;
     }
 
     private void _rangeSearch(int depth, Node root, float minLat, float minLon, float maxLat, float maxLon) {
