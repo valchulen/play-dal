@@ -10,22 +10,142 @@
         margin: 0px;
         padding: 0px
       }
+      .controls {
+        margin-top: 16px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        padding: 0 11px 0 13px;
+        width: 400px;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        text-overflow: ellipsis;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+        margin-left: -1px;
+        padding-left: 14px;  /* Regular padding-left + 1. */
+        width: 401px;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+}
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true_or_false"></script>
     <script>
 var map=null;
+var windows = [];
 function initialize() {
 
   //var tags = [new google.maps.LatLng(-34.551535,-58.4549821), new google.maps.LatLng(-34.5505015,-58.4530273), new google.maps.LatLng(-34.5504151,-58.4503842), new google.maps.LatLng(-34.55215,-58.45161), new google.maps.LatLng(-34.5455954,-58.4311684), new google.maps.LatLng(-34.550593, -58.444558), new google.maps.LatLng(-33.766970, -57.498543)];
   //var cen = CenterFromPoints(tags);
 
-  var mapOptions = {
-    zoom: 15,
-    center: new google.maps.LatLng(-34.5505015,-58.4530273),
+ var markers = [];
+  var map = new google.maps.Map(document.getElementById('map-canvas'), {
     mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  map = new google.maps.Map(document.getElementById('map-canvas'),
-      mapOptions);
+  });
+
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+
+      var defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(position.coords.latitude - 0.05, position.coords.longitude - 0.05),
+      new google.maps.LatLng(position.coords.latitude + 0.05, position.coords.longitude + 0.05));
+      map.fitBounds(defaultBounds);
+
+    }, function() {});
+  } else {
+    // Browser doesn't support Geolocation
+     var defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(-33.8902, 151.1759),
+      new google.maps.LatLng(-33.8474, 151.2631));
+      map.fitBounds(defaultBounds);
+  }
+
+ 
+
+  // Create the search box and link it to the UI element.
+  var input = /** @type {HTMLInputElement} */(
+      document.getElementById('pac-input'));
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  var searchBox = new google.maps.places.SearchBox(
+    /** @type {HTMLInputElement} */(input));
+
+  // [START region_getplaces]
+  // Listen for the event fired when the user selects an item from the
+  // pick list. Retrieve the matching places for that item.
+  google.maps.event.addListener(searchBox, 'places_changed', function() {
+    var places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+    for (var i = 0, marker; marker = markers[i]; i++) {
+      marker.setMap(null);
+    }
+
+    // For each place, get the icon, place name, and location.
+    markers = [];
+    var bounds = new google.maps.LatLngBounds();
+    for (var i = 0, place; place = places[i]; i++) {
+      var image = {
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(25, 25)
+      };
+
+      // Create a marker for each place.
+      var marker = new google.maps.Marker({
+        map: map,
+        icon: image,
+        title: place.name,
+        position: place.geometry.location
+      });
+
+      markers.push(marker);
+
+      bounds.extend(place.geometry.location);
+    }
+
+    map.fitBounds(bounds);
+  });
+  // [END region_getplaces]
+
+  // Bias the SearchBox results towards places that are within the bounds of the
+  // current map's viewport.
+  google.maps.event.addListener(map, 'bounds_changed', function() {
+    var bounds = map.getBounds();
+    searchBox.setBounds(bounds);
+  });
 
    /*var coordInfoWindow = new google.maps.InfoWindow();
   coordInfoWindow.setContent("ola ke ase?<br>Casita :)");
@@ -41,6 +161,8 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var maxlat = (bounds.getNorthEast()).lat();
   var maxlng = (bounds.getNorthEast()).lng();
 
+  //var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oi"],"photoNames":[""],"incapacidad":"eea","importancia":1}] ';
+
   var res = requestTags(minlat, maxlat, minlng, maxlng);
     console.log(res);
 
@@ -55,7 +177,12 @@ google.maps.event.addListener(map, 'idle', function(event) {
 
   console.log(tags.length);
 
-  LoadInfoWindows(tags, map, obj); 
+  for(var i=0; i<windows.length; i++)
+  {
+    windows[i].close();
+  }
+
+  windows = LoadInfoWindows(tags, map, obj); 
   //console.log(cen.lat() + ", " + cen.lng());
   });
 
@@ -70,6 +197,7 @@ function LoadInfoWindows (TagPoints, map, obj)
 {
 
   var fill = "";
+  var coordInfoWindow = [];
 
   for(i = 0; i < TagPoints.length; i++)
   {
@@ -80,11 +208,13 @@ function LoadInfoWindows (TagPoints, map, obj)
     {
       fill = "Tageado por " + obj[i].usuarios[0] + " y otros " + (obj[i].importancia - 1)
     }
-    var coordInfoWindow = new google.maps.InfoWindow({maxHeight:200});
-    coordInfoWindow.setContent(fill);
-    coordInfoWindow.setPosition(TagPoints[i]);
-    coordInfoWindow.open(map);
+    coordInfoWindow[i] = new google.maps.InfoWindow({maxHeight:200});
+    coordInfoWindow[i].setContent(fill);
+    coordInfoWindow[i].setPosition(TagPoints[i]);
+    coordInfoWindow[i].open(map);
   }
+
+  return coordInfoWindow;
 }
 
 function CenterFromPoints (Points)
@@ -129,8 +259,15 @@ function requestTags(minlat, maxlat, minlng, maxlng)
 }*/
 
     </script>
+
+    <style>
+      #target {
+        width: 345px;
+      }
+    </style>
   </head>
   <body>
+   <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map-canvas"></div>
   </body>
 </html>
