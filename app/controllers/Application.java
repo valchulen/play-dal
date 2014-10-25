@@ -48,7 +48,7 @@ public class Application extends Controller {
 
             realGeo.update();
 
-            Logger.debug("UPDATED");
+            Logger.info("UPDATED");
 
             return ok(toJson(realGeo));
         } else {
@@ -56,7 +56,7 @@ public class Application extends Controller {
             geo.save();
             tree.addGeotag(geo);
 
-            Logger.debug("SAVED");
+            Logger.info("SAVED");
             return ok(toJson(geo));
         }
     }
