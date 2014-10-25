@@ -21,7 +21,11 @@ public class AdministratorController extends Controller {
     public static Result validate() {
         if (Form.form().bindFromRequest().get("id") != null && Form.form().bindFromRequest().get("pass") != null) {
             try {
-                return ok(toJson( Admin.find.where().eq("id", Form.form().bindFromRequest().get("id")).eq("pass", Form.form().bindFromRequest().get("pass")).findUnique() ));
+                Admin a = Admin.find.where().eq("id", Form.form().bindFromRequest().get("id")).eq("pass", Form.form().bindFromRequest().get("pass")).findUnique();
+                if (a.id == Long.parseLong(Form.form().bindFromRequest().get("id")) && a.pass == Form.form().bindFromRequest().get("pass"))
+                    return ok("true");
+                else
+                    return ok("false");
             } catch (Exception e) {
                 return badRequest();
             }
