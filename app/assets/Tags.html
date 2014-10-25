@@ -75,8 +75,8 @@ function initialize() {
                                        position.coords.longitude);
 
       var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(position.coords.latitude - 0.05, position.coords.longitude - 0.05),
-      new google.maps.LatLng(position.coords.latitude + 0.05, position.coords.longitude + 0.05));
+      new google.maps.LatLng(position.coords.latitude - 0.0005, position.coords.longitude - 0.0005),
+      new google.maps.LatLng(position.coords.latitude + 0.0005, position.coords.longitude + 0.0005));
       map.fitBounds(defaultBounds);
 
     }, function() {});
@@ -133,7 +133,8 @@ function initialize() {
 
       markers.push(marker);
 
-      bounds.extend(place.geometry.location);
+      bounds.extend(new google.maps.LatLng(place.geometry.location.lat() - 0.001, place.geometry.location.lng() - 0.001));
+      bounds.extend(new google.maps.LatLng(place.geometry.location.lat() + 0.001, place.geometry.location.lng() + 0.001));
     }
 
     map.fitBounds(bounds);
