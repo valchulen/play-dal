@@ -26,6 +26,8 @@ public class Application extends Controller {
     public static Result addGeotag() {
         GeotagUnico g = Form.form(GeotagUnico.class).bindFromRequest().get();
 
+        if (!g.incapacidad.contains(";"))
+            return badRequest();
         String[] vals = g.incapacidad.split(";");
 
         boolean puede = true;
