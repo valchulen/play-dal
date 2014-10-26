@@ -13,7 +13,6 @@ import java.util.List;
 import static play.data.validation.Constraints.Required;
 
 @Entity
-@Table(name = "geotags")
 public class Geotag extends Model implements Comparable {
     public static boolean byLat = false;
 
