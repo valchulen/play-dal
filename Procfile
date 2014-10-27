@@ -1,1 +1,1 @@
-web: target/start -Dhttp.port=${PORT} ${JAVA_OPTS} -Dconfig.resource=application.conf
+web: target/play-java-dal -Dhttp.port=${PORT} ${JAVA_OPTS} -Dconfig.resource=application.conf
