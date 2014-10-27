@@ -24,10 +24,18 @@ public class Application extends Controller {
     }
 
     public static Result addGeotag() {
-        GeotagUnico g = Form.form(GeotagUnico.class).bindFromRequest().get();
-
-        if (!g.incapacidad.contains(";"))
+        GeotagUnico g;
+        try {
+            g = Form.form(GeotagUnico.class).bindFromRequest().get();
+        } catch (Exception e) {
+            Logger.error("addGeotag#error on bindFromRequest");
             return badRequest();
+        }
+
+        if (!g.incapacidad.contains(";")) {
+            Logger.error("addGeotag#error on incapacidad format - 1");
+            return badRequest();
+        }
         String[] vals = g.incapacidad.split(";");
 
         boolean puede = true;
@@ -36,8 +44,10 @@ public class Application extends Controller {
         if (!(vals[1]=="|" || vals[1]=="+" || vals[1]==""))
             puede = false;
 
-        if (g == null || g.usuario.isEmpty() || puede)
+        if (g == null || g.usuario.isEmpty() || puede) {
+            Logger.error("addGeotag#error on incapacidad format - 2");
             return badRequest();
+        }
 
         if (tree.indexedByPos(g.lat, g.lon)){
 
@@ -45,8 +55,10 @@ public class Application extends Controller {
 
             Geotag realGeo = Geotag.find.byId(geoT.id);
 
-            if (realGeo.usuarios == null && g.usuario == null)
+            if (realGeo.usuarios == null && g.usuario == null) {
+                Logger.error("addGeotag#error on usuario = null");
                 return badRequest();
+            }
 
             realGeo.importancia++;
             geoT.importancia++;
@@ -58,8 +70,12 @@ public class Application extends Controller {
             realGeo.concatIncapacidad(vals[0], vals[1]);
             geoT.concatIncapacidad(vals[0], vals[1]);
 
-            realGeo.update();
-
+            try {
+                realGeo.update();
+            } catch (Exception e){
+                Logger.error("addGeotag#error on realgeo.update() info:"+ e.toString());
+                return badRequest();
+            }
             Logger.debug("UPDATED");
 
             return ok(toJson(realGeo));
@@ -68,7 +84,12 @@ public class Application extends Controller {
 
             geo.concatIncapacidad(vals[0], vals[1]);
 
-            geo.save();
+            try {
+                geo.save();
+            } catch (Exception e){
+                Logger.error("addGeotag#error on geo.save() info:"+ e.toString());
+                return badRequest();
+            }
             tree.addGeotag(geo);
 
             Logger.debug("SAVED");
@@ -77,7 +98,15 @@ public class Application extends Controller {
     }
 
     public static Result getAllGeotags() {
-        List<Geotag>  geotags = Geotag.find.all();
+        List<Geotag>  geotags;
+
+        try {
+            geotags = Geotag.find.all();
+        } catch (Exception e){
+            Logger.error("getAllGeos#error on find all info:"+ e.toString());
+            return badRequest();
+        }
+
         Logger.debug("GETTING ALL GEOS");
         return ok(toJson(geotags));
     }
@@ -88,20 +117,25 @@ public class Application extends Controller {
             lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
             lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
         } catch (Exception e) {
+            Logger.error("deleteGeotag#error GET vars failed info:"+ e.toString());
             return badRequest();
         }
         Logger.debug("DELETE FOR LAT" + lat + " AND LON " + lon);
-        if (lat==0.0f || lon == 0.0f)
-            return badRequest();
         if(tree.delete(lat, lon)) {
             Logger.debug("LAT: "+lat+" LON: "+lon+" FOUND IN TREE");
-            Geotag g = Geotag.find.where().eq("lat", lat).eq("lon", lon).findUnique();
-            g.delete();
+
+            try {
+                Geotag g = Geotag.find.where().eq("lat", lat).eq("lon", lon).findUnique();
+                g.delete();
+            } catch (Exception e) {
+                Logger.error("deleteGeotag#error db acess or delete info:"+ e.toString());
+                return badRequest();
+            }
             Logger.debug("DELETED");
             return ok("deleted");
         }
         Logger.debug("NOT FOUND");
-        return notFound();
+        return ok("not found");
     }
 
     public static Result getClosest() {
@@ -110,10 +144,10 @@ public class Application extends Controller {
             lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
             lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
         } catch (Exception e) {
+            Logger.error("getClosest#error GET vars failed info:"+ e.toString());
             return badRequest();
         }
-        if (lat==0.0f || lon == 0.0f)
-            return badRequest();
+
         Geotag g = tree.getClosest(lat, lon);
         if (g != null) {
             Logger.debug("FOUND");
@@ -123,6 +157,7 @@ public class Application extends Controller {
         return ok("not found");
     }
 
+    //falta debugging
     public static Result uploadPic() {
         long id = 0;
         try {
@@ -152,8 +187,10 @@ public class Application extends Controller {
             maxlat = Float.parseFloat(Form.form().bindFromRequest().get("maxlat"));
             maxlon = Float.parseFloat(Form.form().bindFromRequest().get("maxlon"));
         } catch (Exception e) {
+            Logger.error("rangeSearch#error GET vars failed info:"+ e.toString());
             return badRequest();
         }
+
         Logger.debug("RANGE SEARCHING minlat "+ minlat +" minlon "+ minlon +" maxlat "+ maxlat +" maxlon "+maxlon);
         List<Geotag> lis = tree.rangeSearch(minlat, minlon, maxlat, maxlon);
         if (lis != null) {
