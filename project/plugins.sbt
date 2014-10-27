@@ -3,7 +3,7 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.5")
 
-addSbtPlugin("postgresql" % "postgresql" % "9.1-901-1.jdbc4")
+addSbtPlugin("org.postgresql" % "postgresql" % "9.2-1003-jdbc4")
 
 // web plugins
 
