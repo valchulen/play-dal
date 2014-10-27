@@ -1,1 +1,0 @@
-web: target/universal/stage/bin/play-java-dal -Dhttp.port=${PORT} ${JAVA_OPTS} -Dconfig.resource=application.conf
