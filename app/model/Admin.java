@@ -5,9 +5,11 @@ import play.db.ebean.Model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Table;
 import java.util.Random;
 
 @Entity
+@Table(name = "ADMIN")
 public class Admin extends Model{
     private Random RANDOM = new Random();
     private final int PASSWORD_LENGTH = 15;
