@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/play-java-dal -Dhttp.port=${PORT} -DapplyEvolutions.default=true -Djdbc.drivers=org.postgresql.Driver -Ddb.default.driver=org.postgresql.Driver -Ddb.default.url=${DATABASE_URL} -Djava.rmi.server.useCodebaseOnly=true
+web:    play run --http.port=$PORT $PLAY_OPTS
