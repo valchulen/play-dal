@@ -39,7 +39,7 @@ public class Application extends Controller {
         String[] vals = g.incapacidad.split(";");
 
         boolean puede = true;
-        if (!(vals[0]=="audi" || vals[0]=="moto" || vals[0]=="inte" || vals[0]=="visu" || vals[0]=="visc" || vals[0]=="acon"))
+        if (!(vals[0]=="auditiva" || vals[0]=="motora" || vals[0]=="intelectual" || vals[0]=="visual" || vals[0]=="visceral" || vals[0]=="acondroplastia"))
             puede = false;
         if (!(vals[1]=="|" || vals[1]=="+" || vals[1]==""))
             puede = false;

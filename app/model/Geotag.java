@@ -40,7 +40,7 @@ public class Geotag extends Model implements Comparable {
         this.lon = lon;
 
         this.usuarios+=usuario;
-        this.incapacidad = "audi;|;moto;|;inte;|;visu;|;visc;|;acon;|";
+        this.incapacidad = "auditiva;|;motora;|;intelectual;|;visual;|;visceral;|;acondroplastia;|";
     }
 
     public void concatIncapacidad (String key, String value) {
