@@ -13,3 +13,7 @@ libraryDependencies ++= Seq(
   javaWs,
   "org.postgresql" % "postgresql" % "9.3-1100-jdbc4"
 )
+
+val appDependencies = Seq(
+  "com.amazonaws" % "aws-java-sdk" % "1.3.11"
+)
