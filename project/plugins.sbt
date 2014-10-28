@@ -7,6 +7,8 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.5")
 
 libraryDependencies += "org.postgresql" % "postgresql" % "9.3-1100-jdbc4"
 
+libraryDependencies += "com.amazonaws" % "aws-java-sdk" % "1.3.11"
+
 // web plugins
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
