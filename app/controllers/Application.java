@@ -41,7 +41,7 @@ public class Application extends Controller {
         boolean puede = true;
         if (!(vals[0]=="auditiva" || vals[0]=="motora" || vals[0]=="intelectual" || vals[0]=="visual" || vals[0]=="visceral" || vals[0]=="acondroplastia"))
             puede = false;
-        if (!(vals[1]=="|" || vals[1]=="+" || vals[1]==""))
+        if (!(vals[1]=="|" || vals[1]=="+" || vals[1]=="-"))
             puede = false;
 
         if (g == null || g.usuario.isEmpty() || puede) {
