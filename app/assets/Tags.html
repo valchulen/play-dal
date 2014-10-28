@@ -88,8 +88,6 @@ function initialize() {
       map.fitBounds(defaultBounds);
   }
 
- 
-
   // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
       document.getElementById('pac-input'));
@@ -209,7 +207,7 @@ function LoadInfoWindows (TagPoints, map, obj)
     }else
     {
       var width = ((obj[i].usuarios[0].length +21 + (obj[i].importancia - 1).length)*112)/16;
-      fill = '<div style ="width: auto-size; height: auto-size">Tageado por <strong>' + obj[i].usuarios[0] + '</strong> y otros ' + (obj[i].importancia - 1) + '           </div>';
+      fill = '<div style ="width: ' + width + 'px; height: auto-size">Tageado por <strong>' + obj[i].usuarios[0] + '</strong> y otros ' + (obj[i].importancia - 1) + '           </div>';
     }
     coordInfoWindow[i] = new google.maps.InfoWindow();
     coordInfoWindow[i].setContent(fill);
