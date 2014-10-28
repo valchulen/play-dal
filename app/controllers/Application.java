@@ -66,8 +66,10 @@ public class Application extends Controller {
             List<String> ids = realGeo.getUsuarios();
 
             for(String id : ids)
-                if (id == g.usuario)
+                if (id == g.usuario) {
+                    Logger.info("trying double tag");
                     return ok(toJson(realGeo));
+                }
 
             realGeo.importancia++;
             geoT.importancia++;
