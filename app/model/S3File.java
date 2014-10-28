@@ -16,7 +16,6 @@ import java.net.URL;
 import java.util.UUID;
 
 @Entity
-@Table(name = "S3File")
 public class S3File extends Model {
 
     @Id
