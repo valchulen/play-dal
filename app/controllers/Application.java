@@ -33,7 +33,7 @@ public class Application extends Controller {
         }
 
         if (!g.incapacidad.contains(";")) {
-            Logger.error("addGeotag#error on incapacidad format - 1");
+            Logger.error("addGeotag#error on incapacidad:'"+g.incapacidad+"' format - 1");
             return badRequest();
         }
         String[] vals = g.incapacidad.split(";");
@@ -45,7 +45,7 @@ public class Application extends Controller {
             puede = false;
 
         if (g == null || g.usuario.isEmpty() || puede) {
-            Logger.error("addGeotag#error on incapacidad format - 2");
+            Logger.error("addGeotag#error on incapacidad:'"+g.incapacidad+"' format - 2");
             return badRequest();
         }
 
