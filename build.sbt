@@ -11,6 +11,6 @@ libraryDependencies ++= Seq(
   javaEbean,
   cache,
   javaWs,
-  "org.postgresql" % "postgresql" % "9.3-1100-jdbc4",
+  "org.postgresql" % "postgresql" % "9.3-1100-jdbc4"
   "com.amazonaws" % "aws-java-sdk" % "1.3.11"
 )
