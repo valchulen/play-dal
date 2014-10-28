@@ -18,7 +18,7 @@ public class CacheTree {
     private void constructFromDbOnly () {
         if (Geotag.find.all().size() > 0)
         {
-            Geotag [] arr = null;
+            Geotag [] arr = new Geotag[Geotag.find.all().size()];
             Geotag.find.all().toArray(arr);
             cache = new Tree(arr);
         }
@@ -26,7 +26,7 @@ public class CacheTree {
 
     private void reconstructIfNecessary () {
         if (element_count >= REBUILD_COUNT) {
-            Geotag[] arr = null;
+            Geotag[] arr = new Geotag[Geotag.find.all().size()];
             Geotag.find.all().toArray(arr);
             cache = new Tree(arr);
             element_count = 0;
