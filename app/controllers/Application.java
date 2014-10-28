@@ -60,15 +60,20 @@ public class Application extends Controller {
                 return badRequest();
             }
 
+            realGeo.concatIncapacidad(vals[0], vals[1]);
+            geoT.concatIncapacidad(vals[0], vals[1]);
+
+            List<String> ids = realGeo.getUsuarios();
+
+            for(String id : ids)
+                if (id == g.usuario)
+                    return ok(toJson(realGeo));
+
             realGeo.importancia++;
             geoT.importancia++;
 
             realGeo.usuarios += ";" + g.usuario;
             geoT.usuarios += ";" + g.usuario;
-
-
-            realGeo.concatIncapacidad(vals[0], vals[1]);
-            geoT.concatIncapacidad(vals[0], vals[1]);
 
             try {
                 realGeo.update();
