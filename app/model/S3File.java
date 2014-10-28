@@ -66,4 +66,8 @@ public class S3File extends Model {
         }
     }
 
+    public S3File(File file) {
+        this.file = file;
+    }
+
 }

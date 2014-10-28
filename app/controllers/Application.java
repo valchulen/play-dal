@@ -3,13 +3,17 @@ package controllers;
 import CacheTree.CacheTree;
 import model.Geotag;
 import model.GeotagUnico;
+import model.S3File;
+import org.jboss.netty.handler.codec.base64.Base64Decoder;
 import play.*;
 import play.data.Form;
 import play.mvc.*;
 
+import sun.misc.BASE64Decoder;
 import views.html.*;
 
-import java.io.File;
+import javax.xml.bind.DatatypeConverter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +103,7 @@ public class Application extends Controller {
             }
             tree.addGeotag(geo);
 
+
             Logger.debug("SAVED");
             return ok(toJson(geo));
         }
@@ -118,6 +123,7 @@ public class Application extends Controller {
         return ok(toJson(geotags));
     }
 
+    //eliminar las fotos
     public static Result deleteGeotag() {
         float lat = 0.0f, lon = 0.0f;
         try {
@@ -164,25 +170,63 @@ public class Application extends Controller {
         return ok("not found");
     }
 
-    //CAMBIAR
     public static Result uploadPic() {
         long id = 0;
         try {
             id = Long.parseLong(Form.form().bindFromRequest().get("id"));
         } catch (Exception e) {
+            Logger.debug("Bad format");
             return badRequest();
         }
-        if (id == 0)
-            return badRequest();
+
         Geotag g = tree.findById(id);
         if (g == null)
             return badRequest("bad id");
-        String filename = String.valueOf(g.getPhotosURL().size()+1);
 
-        File file = request().body().asRaw().asFile();
-        if (file == null)
+        BASE64Decoder d  = new BASE64Decoder();
+        byte[] raw;
+        try {
+            raw = d.decodeBuffer(request().body().asText());
+        } catch (Exception e){
+            Logger.debug("Failed decoding image info:"+ e.toString());
+            return badRequest("decoding error");
+        }
+
+        File file = new File(String.valueOf(id) +"-"+ String.valueOf(g.id));
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            Logger.debug("No encontro el archivo info:"+ e.toString());
             return badRequest();
-        file.renameTo(new File(Play.application().path().getPath()+"/public/images", filename));
+        }
+        if (fos != null) {
+            try {
+                fos.write(raw);
+            } catch (IOException e) {
+                Logger.debug("no pudo escribir e el archivo info:"+ e.toString());
+                return badRequest();
+            }
+        } else
+            return badRequest();
+
+        S3File photo = new S3File(file);
+        try {
+            photo.save();
+        } catch (Exception e ){
+            Logger.debug("Failed at pic info:"+ e.toString());
+            return badRequest();
+        }
+
+        g.photos.add(photo);
+
+        try {
+            g.update();
+        } catch (Exception e) {
+            Logger.debug("Failed to add photo to geotag info:"+e.toString());
+            return badRequest();
+        }
         return ok("uploaded");
     }
 
