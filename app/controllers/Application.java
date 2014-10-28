@@ -120,7 +120,12 @@ public class Application extends Controller {
         }
 
         Logger.debug("GETTING ALL GEOS");
-        return ok(toJson(geotags));
+        String json = "{";
+            for(Geotag g : geotags) {
+                json += g.toJson() + ",";
+            }
+        json += "}";
+        return ok(json);
     }
 
     //eliminar las fotos

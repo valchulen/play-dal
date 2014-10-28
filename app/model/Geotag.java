@@ -95,4 +95,28 @@ public class Geotag extends Model implements Comparable {
                 return -1;
         }
     }
+
+    public String toJson () {
+        String json = "{";
+            json += "'id':"+id+",";
+            json += "'lat':"+lat+",";
+            json += "'lon':"+lon+",";
+            json += "'incapacidad':'"+incapacidad+"',";
+            json += "'importancia':"+importancia+",";
+            json += "'usuarios':[";
+                List<String> usu = getUsuarios();
+                for(String u : usu) {
+                    json += "'" + u + "',";
+                }
+            json += "],";
+            json += "'photo':[";
+                List<String> phs = getPhotos();
+                for(String p : phs){
+                    json += "'" + p + "'";
+                }
+            json  += "]";
+        json += "}";
+
+        return json;
+    }
 }
