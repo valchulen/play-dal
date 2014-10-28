@@ -164,7 +164,7 @@ public class Application extends Controller {
         return ok("not found");
     }
 
-    //falta debugging
+    //CAMBIAR
     public static Result uploadPic() {
         long id = 0;
         try {
@@ -177,7 +177,7 @@ public class Application extends Controller {
         Geotag g = tree.findById(id);
         if (g == null)
             return badRequest("bad id");
-        String filename = String.valueOf(g.getPhotoNames().size()+1);
+        String filename = String.valueOf(g.getPhotosURL().size()+1);
 
         File file = request().body().asRaw().asFile();
         if (file == null)

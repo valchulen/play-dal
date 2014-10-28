@@ -8,6 +8,7 @@ import plugins.S3Plugin;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.util.UUID;
 
 @Entity
+@Table(name = "S3File")
 public class S3File extends Model {
 
     @Id

@@ -25,7 +25,8 @@ public class Geotag extends Model implements Comparable {
 
     public String usuarios="";
 
-    public String photoNames="";
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    public List<S3File> photos;
 
     public String incapacidad;
     public int importancia = 1;
@@ -33,9 +34,6 @@ public class Geotag extends Model implements Comparable {
     public static Finder<Long, Geotag> find = new Finder<Long, Geotag>(Long.class, Geotag.class);
 
     public Geotag (float lat, float lon,  String usuario) {
-        //setLat(lat);
-        //setLon(lon);
-
         this.lat = lat;
         this.lon = lon;
 
@@ -58,20 +56,21 @@ public class Geotag extends Model implements Comparable {
         incapacidad = res;
     }
 
-    public void setLat(String lat) {
-        this.lat = Float.parseFloat(lat);
-    }
-
-    public void setLon(String lon) {
-        this.lon = Float.parseFloat(lon);
-    }
-
     public List<String> getUsuarios () {
         return Arrays.asList(usuarios.split(";"));
     }
 
-    public List<String> getPhotoNames () {
-        return Arrays.asList(photoNames.split(";"));
+    public List<String> getPhotosURL () {
+        List<String> urls = new ArrayList<String>(photos.size());
+        for(S3File photo : photos) {
+            try {
+                urls.add(photo.getUrl().toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return urls;
     }
 
     @Override
