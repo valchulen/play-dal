@@ -73,6 +73,10 @@ public class Geotag extends Model implements Comparable {
         return urls;
     }
 
+    public List<String> getPhotos () {
+        return getPhotosURL();
+    }
+
     @Override
     public int compareTo(Object o) {
         if (Geotag.byLat) {
