@@ -11,11 +11,7 @@ GET     /geotags                    controllers.Application.getAllGeotags()
 
 GET     /delete                     controllers.Application.deleteGeotag()
 
-<<<<<<< HEAD
 GET     /closest                   controllers.Application.getClosest()
-=======
-GET     /closest                    controllers.Application.getClosest()
->>>>>>> images
 
 POST    /picupload                  controllers.Application.uploadPic()
 
@@ -26,10 +22,6 @@ GET     /newAdmin                   controllers.AdministratorController.createNe
 GET     /validateAdmin              controllers.AdministratorController.validate()
 
 GET     /deleteAdmin                controllers.AdministratorController.delete()
-
-GET     /images                          controllers.UploadController.listImages()
-
-POST    /uploadMultipart                          controllers.UploadController.uploadMultipart()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
