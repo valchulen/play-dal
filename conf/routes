@@ -11,7 +11,11 @@ GET     /geotags                    controllers.Application.getAllGeotags()
 
 GET     /delete                     controllers.Application.deleteGeotag()
 
+<<<<<<< HEAD
 GET     /closest                   controllers.Application.getClosest()
+=======
+GET     /closest                    controllers.Application.getClosest()
+>>>>>>> images
 
 POST    /picupload                  controllers.Application.uploadPic()
 

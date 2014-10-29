@@ -25,8 +25,7 @@ public class Geotag extends Model implements Comparable {
 
     public String usuarios="";
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn(name = "fileID")
+    @OneToMany(cascade = CascadeType.ALL)
     public List<S3File> photos;
 
     public String incapacidad;
