@@ -95,8 +95,6 @@ public class Application extends Controller {
 
             geo.concatIncapacidad(vals[0], vals[1]);
 
-            geo.photos = new ArrayList<S3File>();
-
             try {
                 geo.save();
             } catch (Exception e){
@@ -122,12 +120,12 @@ public class Application extends Controller {
         }
 
         Logger.debug("GETTING ALL GEOS");
-        String json = "{";
+        /*String json = "{";
             for(Geotag g : geotags) {
                 json += g.toJson() + ",";
             }
-        json += "}";
-        return ok(json);
+        json += "}";  */
+        return ok(toJson(geotags));
     }
 
     //eliminar las fotos
@@ -190,6 +188,7 @@ public class Application extends Controller {
         if (g == null)
             return badRequest("bad id");
 
+        //decoding
         BASE64Decoder d  = new BASE64Decoder();
         byte[] raw;
         try {
@@ -199,7 +198,7 @@ public class Application extends Controller {
             return badRequest("decoding error");
         }
 
-        File file = new File(String.valueOf(id) +"-"+ String.valueOf(g.id));
+        File file = new File(String.valueOf(id));
 
         FileOutputStream fos = null;
         try {
@@ -218,7 +217,7 @@ public class Application extends Controller {
         } else
             return badRequest();
 
-        S3File photo = new S3File(file);
+        S3File photo = new S3File(file, file.getName());
         try {
             photo.save();
         } catch (Exception e ){
@@ -226,9 +225,21 @@ public class Application extends Controller {
             return badRequest();
         }
 
-        g.photos.add(photo);
+        String name;
+        try {
+            name = photo.getUrl().toString();
+        } catch (Exception e) {
+            Logger.debug("Fail info:"+ e.toString());
+            return badRequest();
+        }
+
+        g.photos += name + ";";
+
+        Geotag realGeo = Geotag.find.byId(id);
+        realGeo.photos += name + ";";
 
         try {
+            realGeo.update();
             g.update();
         } catch (Exception e) {
             Logger.debug("Failed to add photo to geotag info:"+e.toString());

@@ -1,0 +1,1 @@
+web: target/universal/stage/bin/play-java-dal -DapplyEvolutions.default=true

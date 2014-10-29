@@ -25,9 +25,7 @@ public class Geotag extends Model implements Comparable {
 
     public String usuarios="";
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn(name = "fileID")
-    public List<S3File> photos;
+    public String photos="";
 
     public String incapacidad;
     public int importancia = 1;
@@ -62,14 +60,10 @@ public class Geotag extends Model implements Comparable {
     }
 
     public List<String> getPhotosURL () {
-        List<String> urls = new ArrayList<String>(photos.size());
-        for(S3File photo : photos) {
-            try {
-                urls.add(photo.getUrl().toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        if (photos.length() < 0)
+            return new ArrayList<String>();
+
+        List<String> urls = Arrays.asList(photos.split(";"));
 
         return urls;
     }
@@ -97,7 +91,7 @@ public class Geotag extends Model implements Comparable {
         }
     }
 
-    public String toJson () {
+    /* public String toJson () {
         String json = "{";
             json += "'id':"+id+",";
             json += "'lat':"+lat+",";
@@ -119,5 +113,5 @@ public class Geotag extends Model implements Comparable {
         json += "}";
 
         return json;
-    }
+    }*/
 }
