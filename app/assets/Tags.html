@@ -225,12 +225,13 @@ function LoadInfoMarkers (TagPoints, map, obj)
     //coordInfoWindow[i].setPosition(TagPoints[i]);
     //coordInfoWindow[i].open(map);
 
-    google.maps.event.addListener(mark, 'click', function(e) {
+   google.maps.event.addListener(mark,'click', (function(marker,content){ 
+    return function() {
       var infowindow = new google.maps.InfoWindow();
-      infowindow.setContent(e.fill);
-      infowindow.setPosition(e.position);
-      infowindow.open(map);
-    });
+      infowindow.setContent(content);
+      infowindow.open(map, marker);
+    };
+  })(mark,fill));  
 
     coordMarker.push(mark);
   }
