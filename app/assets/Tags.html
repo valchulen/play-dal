@@ -56,9 +56,15 @@
 }
     </style>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&sensor=true_or_false"></script>
+
+    <script type="text/javascript" src="../../public/javascripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../../public/javascripts/bootstrap.js"></script>
+    <script type="text/javascript" src="../../public/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="Tags.js"></script>
+
     <script>
 var map=null;
-var windows = [];
+var infomarkers = [];
 function initialize() {
 
   //var tags = [new google.maps.LatLng(-34.551535,-58.4549821), new google.maps.LatLng(-34.5505015,-58.4530273), new google.maps.LatLng(-34.5504151,-58.4503842), new google.maps.LatLng(-34.55215,-58.45161), new google.maps.LatLng(-34.5455954,-58.4311684), new google.maps.LatLng(-34.550593, -58.444558), new google.maps.LatLng(-33.766970, -57.498543)];
@@ -69,7 +75,7 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  if(navigator.geolocation) {
+  /*if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
@@ -80,13 +86,13 @@ function initialize() {
       map.fitBounds(defaultBounds);
 
     }, function() {});
-  } else {
+  } else {*/
     // Browser doesn't support Geolocation
      var defaultBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(-33.8902, 151.1759),
       new google.maps.LatLng(-33.8474, 151.2631));
       map.fitBounds(defaultBounds);
-  }
+  //}
 
   // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
@@ -160,10 +166,10 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var maxlat = (bounds.getNorthEast()).lat();
   var maxlng = (bounds.getNorthEast()).lng();
 
-  //var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oi"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
+  var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oi"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
 
-  var res = requestTags(minlat, maxlat, minlng, maxlng);
-    console.log(res);
+  //var res = requestTags(minlat, maxlat, minlng, maxlng);
+    //console.log(res);
 
   var obj = JSON.parse(res);
   var tags = [];
@@ -174,14 +180,12 @@ google.maps.event.addListener(map, 'idle', function(event) {
     tags[tags.length] = new google.maps.LatLng(obj[i].lat, obj[i].lon);
   };
 
-  console.log(tags.length);
-
-  for(var i=0; i<windows.length; i++)
+  for(var i=0; i<infomarkers.length; i++)
   {
-    windows[i].close();
+    infomarkers[i].setMap(null );
   }
 
-  windows = LoadInfoWindows(tags, map, obj); 
+  infomarkers = LoadInfoMarkers(tags, map, obj); 
   //console.log(cen.lat() + ", " + cen.lng());
   });
 
@@ -192,30 +196,44 @@ google.maps.event.addListener(map, 'idle', function(event) {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 
-function LoadInfoWindows (TagPoints, map, obj)
+function LoadInfoMarkers (TagPoints, map, obj)
 {
 
   var fill = "";
-  var coordInfoWindow = [];
+  var coordMarker = [];
 
   for(i = 0; i < TagPoints.length; i++)
   {
     if (obj[i].importancia < 2) 
     {
       var width = ((obj[i].usuarios[0].length +12)*112)/16;
-      fill = '<div style ="height: auto; width: ' + width + 'px">Tageado por <strong>' + obj[i].usuarios[0] + '</strong></div>';
+      fill = '<div class="tag" style ="height: auto; width: ' + width + 'px">Tageado por <strong>' + obj[i].usuarios[0] + '</strong></div>';
     }else
     {
-      var width = ((obj[i].usuarios[0].length +21 + (obj[i].importancia - 1).length)*112)/16;
+      var width = ((obj[i].usuarios[0].length + 21 + (obj[i].importancia - 1).length)*112)/16;
+      console.log((obj[i].importancia - 1).length);
       fill = '<div style ="width: ' + width + 'px; height: auto-size">Tageado por <strong>' + obj[i].usuarios[0] + '</strong> y otros ' + (obj[i].importancia - 1) + '           </div>';
     }
-    coordInfoWindow[i] = new google.maps.InfoWindow();
-    coordInfoWindow[i].setContent(fill);
-    coordInfoWindow[i].setPosition(TagPoints[i]);
-    coordInfoWindow[i].open(map);
+      coordMarker[i] = new google.maps.Marker({
+        position: TagPoints[i],
+        map: map,
+        title:"Hello World!",
+        content: fill,
+        index: i
+    });
+    //coordInfoWindow[i].setContent(fill);
+    //coordInfoWindow[i].setPosition(TagPoints[i]);
+    //coordInfoWindow[i].open(map);
+
+    google.maps.event.addListener(coordMarker, 'click', function(e) {
+      var infowindow = new google.maps.InfoWindow();
+      infowindow.setContent(e.fill);
+      infowindow.setPosition(e.position);
+      infowindow.open(map);
+    });
   }
 
-  return coordInfoWindow;
+  return coordMarker;
 }
 
 function CenterFromPoints (Points)
@@ -270,5 +288,24 @@ function requestTags(minlat, maxlat, minlng, maxlng)
   <body>
    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map-canvas"></div>
+
+    <div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
   </body>
 </html>
