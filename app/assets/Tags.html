@@ -214,7 +214,7 @@ function LoadInfoMarkers (TagPoints, map, obj)
       console.log((obj[i].importancia - 1).length);
       fill = '<div style ="width: ' + width + 'px; height: auto-size">Tageado por <strong>' + obj[i].usuarios[0] + '</strong> y otros ' + (obj[i].importancia - 1) + '           </div>';
     }
-      coordMarker[i] = new google.maps.Marker({
+      var mark = new google.maps.Marker({
         position: TagPoints[i],
         map: map,
         title:"Hello World!",
@@ -225,12 +225,14 @@ function LoadInfoMarkers (TagPoints, map, obj)
     //coordInfoWindow[i].setPosition(TagPoints[i]);
     //coordInfoWindow[i].open(map);
 
-    google.maps.event.addListener(coordMarker, 'click', function(e) {
+    google.maps.event.addListener(mark, 'click', function(e) {
       var infowindow = new google.maps.InfoWindow();
       infowindow.setContent(e.fill);
       infowindow.setPosition(e.position);
       infowindow.open(map);
     });
+
+    coordMarker.push(mark);
   }
 
   return coordMarker;
