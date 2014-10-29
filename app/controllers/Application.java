@@ -103,7 +103,6 @@ public class Application extends Controller {
             }
             tree.addGeotag(geo);
 
-
             Logger.debug("SAVED");
             return ok(toJson(geo));
         }
@@ -217,7 +216,8 @@ public class Application extends Controller {
         } else
             return badRequest();
 
-        S3File photo = new S3File(file, file.getName());
+        S3File photo = new S3File(file);
+        photo.name = String.valueOf(id);
         try {
             photo.save();
         } catch (Exception e ){
@@ -233,10 +233,10 @@ public class Application extends Controller {
             return badRequest();
         }
 
-        g.photos += name + ";";
+        g.photos.add(photo);
 
         Geotag realGeo = Geotag.find.byId(id);
-        realGeo.photos += name + ";";
+        realGeo.photos.add(photo);
 
         try {
             realGeo.update();
