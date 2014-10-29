@@ -95,6 +95,8 @@ public class Application extends Controller {
 
             geo.concatIncapacidad(vals[0], vals[1]);
 
+            geo.photos = new ArrayList<S3File>();
+
             try {
                 geo.save();
             } catch (Exception e){
