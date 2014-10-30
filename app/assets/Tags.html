@@ -75,7 +75,7 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  /*if(navigator.geolocation) {
+  if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
@@ -86,13 +86,13 @@ function initialize() {
       map.fitBounds(defaultBounds);
 
     }, function() {});
-  } else {*/
+  } else {
     // Browser doesn't support Geolocation
      var defaultBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(-33.8902, 151.1759),
       new google.maps.LatLng(-33.8474, 151.2631));
       map.fitBounds(defaultBounds);
-  //}
+  }
 
   // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
@@ -166,9 +166,9 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var maxlat = (bounds.getNorthEast()).lat();
   var maxlng = (bounds.getNorthEast()).lng();
 
-  var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oi"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
+  //var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oiqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
 
-  //var res = requestTags(minlat, maxlat, minlng, maxlng);
+  var res = requestTags(minlat, maxlat, minlng, maxlng);
     //console.log(res);
 
   var obj = JSON.parse(res);
@@ -182,7 +182,10 @@ google.maps.event.addListener(map, 'idle', function(event) {
 
   for(var i=0; i<infomarkers.length; i++)
   {
-    infomarkers[i].setMap(null );
+    if (tags[i].lat != infomarkers[i].position.lat && tags[i].lng != infomarkers[i].position.lng)
+    {
+      infomarkers[i].setMap(null);
+    }
   }
 
   infomarkers = LoadInfoMarkers(tags, map, obj); 
@@ -210,8 +213,7 @@ function LoadInfoMarkers (TagPoints, map, obj)
       fill = '<div class="tag" style ="height: auto; width: ' + width + 'px">Tageado por <strong>' + obj[i].usuarios[0] + '</strong></div>';
     }else
     {
-      var width = ((obj[i].usuarios[0].length + 21 + (obj[i].importancia - 1).length)*112)/16;
-      console.log((obj[i].importancia - 1).length);
+      var width = ((obj[i].usuarios[0].length + 21 + String((obj[i].importancia - 1)).length)*112)/16;
       fill = '<div style ="width: ' + width + 'px; height: auto-size">Tageado por <strong>' + obj[i].usuarios[0] + '</strong> y otros ' + (obj[i].importancia - 1) + '           </div>';
     }
       var mark = new google.maps.Marker({
