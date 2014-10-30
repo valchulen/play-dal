@@ -27,20 +27,14 @@ public class Geotag extends Model implements Comparable {
     @ManyToMany(cascade = CascadeType.ALL)
     public List<Usuario> usuarios;
 
-<<<<<<< HEAD
     @OneToMany(cascade = CascadeType.ALL)
     public List<S3File> photos;
-=======
-
-    public String photoNames="";
->>>>>>> parent of bde87d2... Merge branch 'master' into nem
 
     public String incapacidad;
     public int importancia = 1;
 
     public static Finder<Long, Geotag> find = new Finder<Long, Geotag>(Long.class, Geotag.class);
 
-<<<<<<< HEAD
     public Geotag (float lat, float lon,  long usuario) {
         this.lat = lat;
         this.lon = lon;
@@ -62,17 +56,6 @@ public class Geotag extends Model implements Comparable {
             res += vals[i] + ";";
         }
         incapacidad = res;
-=======
-    public Geotag (float lat, float lon,  String usuario, String incapacidad) {
-        //setLat(lat);
-        //setLon(lon);
-
-        this.lat = lat;
-        this.lon = lon;
-
-        this.usuarios+=usuario;
-        this.incapacidad = incapacidad;
->>>>>>> parent of bde87d2... Merge branch 'master' into nem
     }
 
     /*public List<String> getUsuarios () {

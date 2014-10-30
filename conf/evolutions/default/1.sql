@@ -12,7 +12,6 @@ create table geotag (
   constraint pk_geotag primary key (id))
 ;
 
-<<<<<<< HEAD
 create table s3file (
   id                        varchar(40) not null,
   geotag_id                 bigint not null,
@@ -32,10 +31,6 @@ create table geotag_usuario (
   usuario_id                     bigint not null,
   constraint pk_geotag_usuario primary key (geotag_id, usuario_id))
 ;
-create sequence admin_seq;
-
-=======
->>>>>>> parent of bde87d2... Merge branch 'master' into nem
 create sequence geotag_seq;
 
 create sequence usuario_seq;

@@ -31,7 +31,6 @@ public class Application extends Controller {
     public static Result addGeotag() {
         GeotagUnico g = Form.form(GeotagUnico.class).bindFromRequest().get();
 
-<<<<<<< HEAD
         if (!g.incapacidad.contains(";")) {
             Logger.error("addGeotag#error on incapacidad:'"+g.incapacidad+"' format - 1");
             return badRequest();
@@ -56,10 +55,6 @@ public class Application extends Controller {
             Logger.error("Bad format of usuario");
             return badRequest();
         }
-=======
-        if (g == null || g.usuario.isEmpty())
-            return badRequest();
->>>>>>> parent of bde87d2... Merge branch 'master' into nem
 
         if (tree.indexedByPos(g.lat, g.lon)){
 
@@ -84,7 +79,6 @@ public class Application extends Controller {
 
             Usuario u = Usuario.ifExists(id);
 
-<<<<<<< HEAD
             realGeo.usuarios.add(u);
 
             geoT.usuarios.add(u);
@@ -96,17 +90,10 @@ public class Application extends Controller {
                 Logger.error("addGeotag#error on realgeo.update() info:"+ e.toString());
                 return badRequest();
             }
-=======
-            //concatenar incapacidad
-
-            realGeo.update();
-
->>>>>>> parent of bde87d2... Merge branch 'master' into nem
             Logger.debug("UPDATED");
 
             return ok(toJson(realGeo));
         } else {
-<<<<<<< HEAD
             Geotag geo = new Geotag(g.lat, g.lon, id);
 
             geo.concatIncapacidad(vals[0], vals[1]);
@@ -118,10 +105,6 @@ public class Application extends Controller {
                 Logger.error("addGeotag#error on geo.save() info:"+ e.toString());
                 return badRequest();
             }
-=======
-            Geotag geo = new Geotag(g.lat, g.lon, g.usuario, g.incapacidad);
-            geo.save();
->>>>>>> parent of bde87d2... Merge branch 'master' into nem
             tree.addGeotag(geo);
 
             Logger.debug("SAVED");
@@ -132,11 +115,6 @@ public class Application extends Controller {
     public static Result getAllGeotags() {
         List<Geotag>  geotags = Geotag.find.all();
         Logger.debug("GETTING ALL GEOS");
-        /*String json = "{";
-            for(Geotag g : geotags) {
-                json += g.toJson() + ",";
-            }
-        json += "}";  */
         return ok(toJson(geotags));
     }
 
@@ -174,7 +152,7 @@ public class Application extends Controller {
         return ok("not found");
     }
 
-<<<<<<< HEAD
+
     /*public static Result uploadPic() {
         long id = 0;
         try {
@@ -184,13 +162,6 @@ public class Application extends Controller {
             return badRequest();
         }
 
-=======
-    public static Result uploadPic() {
-        long id = 0;
-        id = Long.parseLong(Form.form().bindFromRequest().get("id"));
-        if (id == 0)
-            return badRequest();
->>>>>>> parent of bde87d2... Merge branch 'master' into nem
         Geotag g = tree.findById(id);
         if (g == null)
             return badRequest("bad id");

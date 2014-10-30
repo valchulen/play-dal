@@ -3,15 +3,11 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.5")
 
-<<<<<<< HEAD
-//libraryDependencies += jdbc
 
 libraryDependencies += "org.postgresql" % "postgresql" % "9.3-1100-jdbc4"
 
 libraryDependencies += "com.amazonaws" % "aws-java-sdk" % "1.3.11"
 
-=======
->>>>>>> parent of bde87d2... Merge branch 'master' into nem
 // web plugins
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
