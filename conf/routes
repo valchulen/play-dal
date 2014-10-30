@@ -13,15 +13,9 @@ GET     /delete                     controllers.Application.deleteGeotag()
 
 GET     /closest                   controllers.Application.getClosest()
 
-POST    /picupload                  controllers.Application.uploadPic()
+#POST    /picupload                  controllers.Application.uploadPic()
 
 GET     /range                      controllers.Application.rangeSearch()
-
-GET     /newAdmin                   controllers.AdministratorController.createNew()
-
-GET     /validateAdmin              controllers.AdministratorController.validate()
-
-GET     /deleteAdmin                controllers.AdministratorController.delete()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

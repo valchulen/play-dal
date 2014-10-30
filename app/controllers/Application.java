@@ -4,6 +4,7 @@ import CacheTree.CacheTree;
 import model.Geotag;
 import model.GeotagUnico;
 import model.S3File;
+import model.Usuario;
 import org.jboss.netty.handler.codec.base64.Base64Decoder;
 import play.*;
 import play.data.Form;
@@ -28,14 +29,9 @@ public class Application extends Controller {
     }
 
     public static Result addGeotag() {
-        GeotagUnico g;
-        try {
-            g = Form.form(GeotagUnico.class).bindFromRequest().get();
-        } catch (Exception e) {
-            Logger.error("addGeotag#error on bindFromRequest");
-            return badRequest();
-        }
+        GeotagUnico g = Form.form(GeotagUnico.class).bindFromRequest().get();
 
+<<<<<<< HEAD
         if (!g.incapacidad.contains(";")) {
             Logger.error("addGeotag#error on incapacidad:'"+g.incapacidad+"' format - 1");
             return badRequest();
@@ -53,24 +49,32 @@ public class Application extends Controller {
             return badRequest();
         }
 
+        Long id;
+        try {
+            id = Long.parseLong(g.usuario);
+        } catch (NumberFormatException e) {
+            Logger.error("Bad format of usuario");
+            return badRequest();
+        }
+=======
+        if (g == null || g.usuario.isEmpty())
+            return badRequest();
+>>>>>>> parent of bde87d2... Merge branch 'master' into nem
+
         if (tree.indexedByPos(g.lat, g.lon)){
 
             Geotag geoT = tree.getClosest(g.lat, g.lon);
 
             Geotag realGeo = Geotag.find.byId(geoT.id);
 
-            if (realGeo.usuarios == null && g.usuario == null) {
-                Logger.error("addGeotag#error on usuario = null");
+            if (realGeo.usuarios == null && g.usuario == null)
                 return badRequest();
-            }
 
             realGeo.concatIncapacidad(vals[0], vals[1]);
             geoT.concatIncapacidad(vals[0], vals[1]);
 
-            List<String> ids = realGeo.getUsuarios();
-
-            for(String id : ids)
-                if (id == g.usuario) {
+            for(Usuario user : geoT.usuarios)
+                if (user.id == id) {
                     Logger.info("trying double tag");
                     return ok(toJson(realGeo));
                 }
@@ -78,29 +82,46 @@ public class Application extends Controller {
             realGeo.importancia++;
             geoT.importancia++;
 
-            realGeo.usuarios += ";" + g.usuario;
-            geoT.usuarios += ";" + g.usuario;
+            Usuario u = Usuario.ifExists(id);
+
+<<<<<<< HEAD
+            realGeo.usuarios.add(u);
+
+            geoT.usuarios.add(u);
 
             try {
                 realGeo.update();
+                realGeo.saveManyToManyAssociations("usuarios");
             } catch (Exception e){
                 Logger.error("addGeotag#error on realgeo.update() info:"+ e.toString());
                 return badRequest();
             }
+=======
+            //concatenar incapacidad
+
+            realGeo.update();
+
+>>>>>>> parent of bde87d2... Merge branch 'master' into nem
             Logger.debug("UPDATED");
 
             return ok(toJson(realGeo));
         } else {
-            Geotag geo = new Geotag(g.lat, g.lon, g.usuario);
+<<<<<<< HEAD
+            Geotag geo = new Geotag(g.lat, g.lon, id);
 
             geo.concatIncapacidad(vals[0], vals[1]);
 
             try {
                 geo.save();
+                geo.saveManyToManyAssociations("usuarios");
             } catch (Exception e){
                 Logger.error("addGeotag#error on geo.save() info:"+ e.toString());
                 return badRequest();
             }
+=======
+            Geotag geo = new Geotag(g.lat, g.lon, g.usuario, g.incapacidad);
+            geo.save();
+>>>>>>> parent of bde87d2... Merge branch 'master' into nem
             tree.addGeotag(geo);
 
             Logger.debug("SAVED");
@@ -109,15 +130,7 @@ public class Application extends Controller {
     }
 
     public static Result getAllGeotags() {
-        List<Geotag>  geotags;
-
-        try {
-            geotags = Geotag.find.all();
-        } catch (Exception e){
-            Logger.error("getAllGeos#error on find all info:"+ e.toString());
-            return badRequest();
-        }
-
+        List<Geotag>  geotags = Geotag.find.all();
         Logger.debug("GETTING ALL GEOS");
         /*String json = "{";
             for(Geotag g : geotags) {
@@ -130,41 +143,28 @@ public class Application extends Controller {
     //eliminar las fotos
     public static Result deleteGeotag() {
         float lat = 0.0f, lon = 0.0f;
-        try {
-            lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
-            lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
-        } catch (Exception e) {
-            Logger.error("deleteGeotag#error GET vars failed info:"+ e.toString());
-            return badRequest();
-        }
+        lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
+        lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
         Logger.debug("DELETE FOR LAT" + lat + " AND LON " + lon);
+        if (lat==0.0f || lon == 0.0f)
+            return badRequest();
         if(tree.delete(lat, lon)) {
             Logger.debug("LAT: "+lat+" LON: "+lon+" FOUND IN TREE");
-
-            try {
-                Geotag g = Geotag.find.where().eq("lat", lat).eq("lon", lon).findUnique();
-                g.delete();
-            } catch (Exception e) {
-                Logger.error("deleteGeotag#error db acess or delete info:"+ e.toString());
-                return badRequest();
-            }
+            Geotag g = Geotag.find.where().eq("lat", lat).eq("lon", lon).findUnique();
+            g.delete();
             Logger.debug("DELETED");
             return ok("deleted");
         }
         Logger.debug("NOT FOUND");
-        return ok("not found");
+        return notFound();
     }
 
     public static Result getClosest() {
         float lat = 0.0f, lon = 0.0f;
-        try {
-            lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
-            lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
-        } catch (Exception e) {
-            Logger.error("getClosest#error GET vars failed info:"+ e.toString());
+        lat = Float.parseFloat(Form.form().bindFromRequest().get("lat"));
+        lon = Float.parseFloat(Form.form().bindFromRequest().get("lon"));
+        if (lat==0.0f || lon == 0.0f)
             return badRequest();
-        }
-
         Geotag g = tree.getClosest(lat, lon);
         if (g != null) {
             Logger.debug("FOUND");
@@ -174,7 +174,8 @@ public class Application extends Controller {
         return ok("not found");
     }
 
-    public static Result uploadPic() {
+<<<<<<< HEAD
+    /*public static Result uploadPic() {
         long id = 0;
         try {
             id = Long.parseLong(Form.form().bindFromRequest().get("id"));
@@ -183,6 +184,13 @@ public class Application extends Controller {
             return badRequest();
         }
 
+=======
+    public static Result uploadPic() {
+        long id = 0;
+        id = Long.parseLong(Form.form().bindFromRequest().get("id"));
+        if (id == 0)
+            return badRequest();
+>>>>>>> parent of bde87d2... Merge branch 'master' into nem
         Geotag g = tree.findById(id);
         if (g == null)
             return badRequest("bad id");
@@ -246,20 +254,16 @@ public class Application extends Controller {
             return badRequest();
         }
         return ok("uploaded");
-    }
+    }       */
 
     public static Result rangeSearch() {
         float minlat = 0.0f, minlon = 0.0f; float maxlat = 0.0f, maxlon = 0.0f;
-        try {
-            minlat = Float.parseFloat(Form.form().bindFromRequest().get("minlat"));
-            minlon = Float.parseFloat(Form.form().bindFromRequest().get("minlon"));
-            maxlat = Float.parseFloat(Form.form().bindFromRequest().get("maxlat"));
-            maxlon = Float.parseFloat(Form.form().bindFromRequest().get("maxlon"));
-        } catch (Exception e) {
-            Logger.error("rangeSearch#error GET vars failed info:"+ e.toString());
+        minlat = Float.parseFloat(Form.form().bindFromRequest().get("minlat"));
+        minlon = Float.parseFloat(Form.form().bindFromRequest().get("minlon"));
+        maxlat = Float.parseFloat(Form.form().bindFromRequest().get("maxlat"));
+        maxlon = Float.parseFloat(Form.form().bindFromRequest().get("maxlon"));
+        if (minlat == 0.0f || minlon == 0.0f || maxlat == 0.0f || maxlon == 0.0f)
             return badRequest();
-        }
-
         Logger.debug("RANGE SEARCHING minlat "+ minlat +" minlon "+ minlon +" maxlat "+ maxlat +" maxlon "+maxlon);
         List<Geotag> lis = tree.rangeSearch(minlat, minlon, maxlat, maxlon);
         if (lis != null) {
@@ -269,4 +273,5 @@ public class Application extends Controller {
         Logger.debug("NOT FOUND");
         return ok("nothing found");
     }
+
 }
