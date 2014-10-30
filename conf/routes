@@ -13,7 +13,7 @@ GET     /delete                     controllers.Application.deleteGeotag()
 
 GET     /closest                   controllers.Application.getClosest()
 
-#POST    /picupload                  controllers.Application.uploadPic()
+POST    /picupload                  controllers.Application.uploadMultipart()
 
 GET     /range                      controllers.Application.rangeSearch()
 

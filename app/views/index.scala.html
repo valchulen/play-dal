@@ -21,4 +21,10 @@
     <button>closest geo</button>
 </form>
 
+@helper.form(action = routes.Application.uploadMultipart, 'enctype -> "multipart/form-data") {
+        <input type="text" name="id">
+    <input type="file" name="upload">
+    <input type="submit">
+}
+
 }

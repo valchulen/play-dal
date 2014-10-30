@@ -155,8 +155,7 @@ public class Application extends Controller {
         return ok("not found");
     }
 
-
-    /*public static Result uploadPic() {
+    public static Result uploadMultipart () {
         long id = 0;
         try {
             id = Long.parseLong(Form.form().bindFromRequest().get("id"));
@@ -165,70 +164,27 @@ public class Application extends Controller {
             return badRequest();
         }
 
-        Geotag g = tree.findById(id);
-        if (g == null)
+        if (tree.findById(id) == null)
             return badRequest("bad id");
 
-        //decoding
-        BASE64Decoder d  = new BASE64Decoder();
-        byte[] raw;
-        try {
-            raw = d.decodeBuffer(request().body().asText());
-        } catch (Exception e){
-            Logger.debug("Failed decoding image info:"+ e.toString());
-            return badRequest("decoding error");
-        }
+        Http.MultipartFormData body = request().body().asMultipartFormData();
+        Http.MultipartFormData.FilePart uploadFilePart = body.getFile("upload");
+        if (uploadFilePart != null) {
+            S3File s3File = new S3File();
+            s3File.name = uploadFilePart.getFilename();
+            s3File.file = uploadFilePart.getFile();
 
-        File file = new File(String.valueOf(id));
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            Logger.debug("No encontro el archivo info:"+ e.toString());
-            return badRequest();
-        }
-        if (fos != null) {
-            try {
-                fos.write(raw);
-            } catch (IOException e) {
-                Logger.debug("no pudo escribir e el archivo info:"+ e.toString());
-                return badRequest();
-            }
-        } else
-            return badRequest();
-
-        S3File photo = new S3File(file);
-        photo.name = String.valueOf(id);
-        try {
-            photo.save();
-        } catch (Exception e ){
-            Logger.debug("Failed at pic info:"+ e.toString());
-            return badRequest();
-        }
-
-        String name;
-        try {
-            name = photo.getUrl().toString();
-        } catch (Exception e) {
-            Logger.debug("Fail info:"+ e.toString());
-            return badRequest();
-        }
-
-        g.photos.add(photo);
-
-        Geotag realGeo = Geotag.find.byId(id);
-        realGeo.photos.add(photo);
-
-        try {
-            realGeo.update();
+            Geotag g = Geotag.find.byId(id);
+            g.photos.add(s3File);
             g.update();
-        } catch (Exception e) {
-            Logger.debug("Failed to add photo to geotag info:"+e.toString());
-            return badRequest();
+            s3File.save();
+
+            return redirect(routes.Application.getAllGeotags());
         }
-        return ok("uploaded");
-    }       */
+        else {
+            return badRequest("File upload error");
+        }
+    }
 
     public static Result rangeSearch() {
         float minlat = 0.0f, minlon = 0.0f; float maxlat = 0.0f, maxlon = 0.0f;

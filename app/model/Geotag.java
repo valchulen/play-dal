@@ -58,11 +58,8 @@ public class Geotag extends Model implements Comparable {
         incapacidad = res;
     }
 
-    /*public List<String> getUsuarios () {
-        return Arrays.asList(usuarios.split(";"));
-    } */
 
-    public List<String> getPhotosURL () {
+    public List<String> getPhotos () {
         List<String> urls = new ArrayList<String>(photos.size());
         for(S3File photo : photos) {
             try {
@@ -73,10 +70,6 @@ public class Geotag extends Model implements Comparable {
         }
 
         return urls;
-    }
-
-    public List<String> getPhotos () {
-        return getPhotosURL();
     }
 
     @Override
