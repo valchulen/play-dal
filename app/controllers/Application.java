@@ -56,6 +56,8 @@ public class Application extends Controller {
             return badRequest();
         }
 
+        Logger.info("adding lat: "+ g.lat + " lon:" + g.lon);
+
         if (tree.indexedByPos(g.lat, g.lon)){
 
             Geotag geoT = tree.getClosest(g.lat, g.lon);
@@ -68,11 +70,12 @@ public class Application extends Controller {
             realGeo.concatIncapacidad(vals[0], vals[1]);
             geoT.concatIncapacidad(vals[0], vals[1]);
 
-            for(Usuario user : geoT.usuarios)
+            for(Usuario user : realGeo.usuarios){
                 if (user.id == id) {
                     Logger.info("trying double tag");
                     return ok(toJson(realGeo));
                 }
+            }
 
             realGeo.importancia++;
             geoT.importancia++;
