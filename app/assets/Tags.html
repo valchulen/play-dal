@@ -57,10 +57,13 @@
     </style>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&sensor=true_or_false"></script>
 
-    <script type="text/javascript" src="../../public/javascripts/jquery-2.1.1.js"></script>
+    <!--<script type="text/javascript" src="../../public/javascripts/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="../../public/javascripts/bootstrap.js"></script>
     <script type="text/javascript" src="../../public/javascripts/bootstrap.min.js"></script>
-    <script type="text/javascript" src="Tags.js"></script>
+    <script type="text/javascript" src="Tags.js"></script>-->
+
+    <script type="text/javascript" src="jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
 
     <script>
 var map=null;
@@ -75,7 +78,7 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  if(navigator.geolocation) {
+  /*if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
@@ -86,13 +89,13 @@ function initialize() {
       map.fitBounds(defaultBounds);
 
     }, function() {});
-  } else {
+  } else {*/
     // Browser doesn't support Geolocation
      var defaultBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(-33.8902, 151.1759),
       new google.maps.LatLng(-33.8474, 151.2631));
       map.fitBounds(defaultBounds);
-  }
+  //}
 
   // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
@@ -166,9 +169,9 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var maxlat = (bounds.getNorthEast()).lat();
   var maxlng = (bounds.getNorthEast()).lng();
 
-  //var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oiqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
+  var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oiqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
 
-  var res = requestTags(minlat, maxlat, minlng, maxlng);
+  //var res = requestTags(minlat, maxlat, minlng, maxlng);
     //console.log(res);
 
   var obj = JSON.parse(res);
@@ -210,7 +213,7 @@ function LoadInfoMarkers (TagPoints, map, obj)
     if (obj[i].importancia < 2) 
     {
       var width = ((obj[i].usuarios[0].length +12)*112)/16;
-      fill = '<div class="tag" style ="height: auto; width: ' + width + 'px">Tageado por <strong>' + obj[i].usuarios[0] + '</strong></div>';
+      fill = '<div class="tagggg" style ="height: auto; width: ' + width + 'px">Tageado por <strong>' + obj[i].usuarios[0] + '</strong></div>';
     }else
     {
       var width = ((obj[i].usuarios[0].length + 21 + String((obj[i].importancia - 1)).length)*112)/16;
@@ -232,6 +235,14 @@ function LoadInfoMarkers (TagPoints, map, obj)
       var infowindow = new google.maps.InfoWindow();
       infowindow.setContent(content);
       infowindow.open(map, marker);
+
+
+      //$(".map-canvas").on('click', '.tagggg', function(){
+          console.log("ok");
+          //$("body").html("puta");
+     //});
+
+
     };
   })(mark,fill));  
 
