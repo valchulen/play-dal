@@ -179,7 +179,7 @@ public class Application extends Controller {
             g.update();
             s3File.save();
 
-            return redirect(routes.Application.getAllGeotags());
+            return ok("uploaded");
         }
         else {
             return badRequest("File upload error");
