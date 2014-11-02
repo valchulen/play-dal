@@ -57,14 +57,14 @@
     </style>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&sensor=true_or_false"></script>
 
-    <script type="text/javascript" src="javascripts/jquery-2.1.1.js"></script>
+    <!--<script type="text/javascript" src="javascripts/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="javascripts/bootstrap.js"></script>
     <script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
-    <script type="text/javascript" src="Tags.js"></script>
+    <script type="text/javascript" src="Tags.js"></script>-->
 
     <script>
 var map=null;
-var infomarkers = [];
+var infomarkers;
 function initialize() {
 
   //var tags = [new google.maps.LatLng(-34.551535,-58.4549821), new google.maps.LatLng(-34.5505015,-58.4530273), new google.maps.LatLng(-34.5504151,-58.4503842), new google.maps.LatLng(-34.55215,-58.45161), new google.maps.LatLng(-34.5455954,-58.4311684), new google.maps.LatLng(-34.550593, -58.444558), new google.maps.LatLng(-33.766970, -57.498543)];
@@ -75,7 +75,7 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  /*if(navigator.geolocation) {
+  if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
@@ -86,13 +86,13 @@ function initialize() {
       map.fitBounds(defaultBounds);
 
     }, function() {});
-  } else {*/
+  } else {
     // Browser doesn't support Geolocation
      var defaultBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(-33.8902, 151.1759),
       new google.maps.LatLng(-33.8474, 151.2631));
       map.fitBounds(defaultBounds);
-  //}
+  }
 
   // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
@@ -166,9 +166,9 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var maxlat = (bounds.getNorthEast()).lat();
   var maxlng = (bounds.getNorthEast()).lng();
 
-  var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oiqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
+  //var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oiqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
 
-  //var res = requestTags(minlat, maxlat, minlng, maxlng);
+  var res = requestTags(minlat, maxlat, minlng, maxlng);
     //console.log(res);
 
   var obj = JSON.parse(res);
@@ -180,15 +180,25 @@ google.maps.event.addListener(map, 'idle', function(event) {
     tags[tags.length] = new google.maps.LatLng(obj[i].lat, obj[i].lon);
   };
 
-  for(var i=0; i<infomarkers.length; i++)
+  var len;
+
+  if (infomarkers==null)
   {
-    if (tags[i].lat != infomarkers[i].position.lat && tags[i].lng != infomarkers[i].position.lng)
+    len=0;
+  }
+  else{
+    len=infomarkers.length;
+  }
+
+  for(var i=0; i<len; i++)
+  {
+    if (tags[i].lat != infomarkers[i][0].position.lat && tags[i].lng != infomarkers[i][0].position.lng)
     {
       infomarkers[i].setMap(null);
     }
   }
 
-  infomarkers = LoadInfoMarkers(tags, map, obj); 
+  infomarkers = LoadInfoMarkers(tags, map, obj, infomarkers); 
   //console.log(cen.lat() + ", " + cen.lng());
   });
 
@@ -199,14 +209,17 @@ google.maps.event.addListener(map, 'idle', function(event) {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 
-function LoadInfoMarkers (TagPoints, map, obj)
+function LoadInfoMarkers (TagPoints, map, obj, pre)
 {
 
   var fill = "";
   var coordMarker = [];
 
-  for(i = 0; i < TagPoints.length; i++)
+  for(var i = 0; i < TagPoints.length; i++)
   {
+
+    coordMarker[i] = [];
+
     if (obj[i].importancia < 2) 
     {
       var width = ((obj[i].usuarios[0].length +12)*112)/16;
@@ -227,11 +240,23 @@ function LoadInfoMarkers (TagPoints, map, obj)
     //coordInfoWindow[i].setPosition(TagPoints[i]);
     //coordInfoWindow[i].open(map);
 
+    coordMarker[i][0] = mark;
+
    google.maps.event.addListener(mark,'click', (function(marker,content){ 
     return function() {
+
+      for(var i=0; i<coordMarker.length; i++)
+      {
+        if(coordMarker[i][1]!=null)
+        {
+          coordMarker[i][1].close();
+        }
+      }
+
       var infowindow = new google.maps.InfoWindow();
       infowindow.setContent(content);
       infowindow.open(map, marker);
+      coordMarker[marker.index][1] = infowindow;
 
 
       //$(".map-canvas").on('click', '.tagggg', function(){
@@ -242,8 +267,6 @@ function LoadInfoMarkers (TagPoints, map, obj)
 
     };
   })(mark,fill));  
-
-    coordMarker.push(mark);
   }
 
   return coordMarker;
