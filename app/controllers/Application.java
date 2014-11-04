@@ -50,7 +50,12 @@ public class Application extends Controller {
 
         Long id;
         try {
-            id = Long.parseLong(g.usuario);
+            String a = null;
+            if (g.usuario.length() > 20)
+                a = g.usuario.substring(0, 20);
+            else
+                a = g.usuario;
+            id = Long.parseLong(a);
         } catch (NumberFormatException e) {
             Logger.error("Bad format of usuario:"+g.usuario);
             return badRequest();
