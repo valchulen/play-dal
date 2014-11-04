@@ -161,11 +161,11 @@ public class Application extends Controller {
             id = Long.parseLong(Form.form().bindFromRequest().get("id"));
         } catch (Exception e) {
             Logger.debug("Bad format");
-            return badRequest();
+            return badRequest("bad id - 1");
         }
 
         if (tree.findById(id) == null)
-            return badRequest("bad id");
+            return badRequest("bad id - 1");
 
         Http.MultipartFormData body = request().body().asMultipartFormData();
         Http.MultipartFormData.FilePart uploadFilePart = body.getFile("upload");
