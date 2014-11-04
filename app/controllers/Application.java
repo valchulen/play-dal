@@ -157,22 +157,15 @@ public class Application extends Controller {
 
     public static Result uploadMultipart () {
         long id = 0;
-        String s;
         try {
-            s = Form.form().bindFromRequest().get("id");
-        } catch (Exception e) {
-            Logger.debug("Bad format id");
-            return badRequest("bad id - -1");
-        }
-        try {
-            id = Long.parseLong(s);
+            id = Long.parseLong(Form.form().bindFromRequest().get("id"));
         } catch (Exception e) {
             Logger.debug("Bad format");
             return badRequest("bad id - 1");
         }
 
         if (tree.findById(id) == null)
-            return badRequest("bad id - 2");
+            return badRequest("bad id - 1");
 
         Http.MultipartFormData body = request().body().asMultipartFormData();
         Http.MultipartFormData.FilePart uploadFilePart = body.getFile("upload");
