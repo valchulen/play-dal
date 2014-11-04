@@ -166,7 +166,7 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var maxlat = (bounds.getNorthEast()).lat();
   var maxlng = (bounds.getNorthEast()).lng();
 
-  //var res = '[{"id":1,"lat":-34.55050277709961,"lon":-58.453025817871094,"usuarios":["last"],"photoNames":[""],"incapacidad":"eea","importancia":1},{"id":1,"lat":-34.6,"lon":-58.5,"usuarios":["oiqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"],"photoNames":[""],"incapacidad":"eea","importancia":3}] ';
+  //var res = '[{"id":2,"lat":-34.12,"lon":-50.121,"usuarios":[{"id":1234567890}],"photos":["https://s3.amazonaws.com/com.valchu.ruedassinfronteras/b6cd8670-ce04-4e98-be0d-312bceecc5d2/IMG_0151.JPG"],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":3,"lat":15.0,"lon":4543.0,"usuarios":[{"id":12345678900}],"photos":[],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":4,"lat":45.0,"lon":45.0,"usuarios":[{"id":1234567890}],"photos":[],"incapacidad":"auditiva;|;motora;+;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":1,"lat":11.0,"lon":11.0,"usuarios":[{"id":111},{"id":1234567890},{"id":12345678900},{"id":120},{"id":1204},{"id":12345678901}],"photos":[],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":6},{"id":21,"lat":-36.71549987792969,"lon":-54.66600036621094,"usuarios":[{"id":1234}],"photos":[],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1}] ';
 
   var res = requestTags(minlat, maxlat, minlng, maxlng);
     //console.log(res);
@@ -220,19 +220,40 @@ function LoadInfoMarkers (TagPoints, map, obj, pre)
 
     coordMarker[i] = [];
 
+     var discapacidad = (obj[i].incapacidad.split('-'))[0].split(';')
+     var disc = discapacidad[discapacidad.length-2];
+
     if (obj[i].importancia < 2) 
     {
-      var width = ((obj[i].usuarios[0].length +12)*112)/16;
-      fill = '<div class="tagggg" style ="height: auto; width: ' + width + 'px">Tageado por <strong>' + obj[i].usuarios[0] + '</strong></div>';
+      if(obj[i].photos.length < 1)
+      {
+              fill = '<div class="tagggg" style ="height: 40px; width: 130px">Discapacidad <strong>' + disc + '</strong></div>';
+
+      }else
+      {
+              fill = '<div class="tagggg" style ="height: 130px; width: 200px">Discapacidad <strong>' + disc + '</strong></br><img src="' + obj[i].photos[0] + '" alt="Pic" height="90" width="170"></div>';
+      }
     }else
-    {
-      var width = ((obj[i].usuarios[0].length + 21 + String((obj[i].importancia - 1)).length)*112)/16;
-      fill = '<div style ="width: ' + width + 'px; height: auto-size">Tageado por <strong>' + obj[i].usuarios[0] + '</strong> y otros ' + (obj[i].importancia - 1) + '           </div>';
+    { 
+      if(obj[i].photos.length < 1)
+      {
+              fill = '<div class="tagggg" style ="height: 50px; width: 130px">Discapacidad <strong>' + disc + '</strong> tageado por ' + obj[i].importancia + '</div>';
+
+      }else
+      {
+              fill = '<div class="tagggg" style ="height: 120px; width: 190px">Discapacidad <strong>' + disc + '</strong> tageado por ' + obj[i].importancia + '</br><img src="' + obj[i].photos[0] + '" alt="Pic" height="110" width="190"></div>';
+      }
     }
       var mark = new google.maps.Marker({
         position: TagPoints[i],
         map: map,
-        title:"Hello World!",
+        icon: {
+                  url: 'https://lh3.googleusercontent.com/zk3GaWbajyZxEg26ns5L7zmYZ1npr99tQR6ELh9MDJB2bw9EFxDc0X81ZuxR5feAdOvQfQ=w1342-h523',
+                  size: new google.maps.Size(50, 71),
+                  origin: new google.maps.Point(0, 0),
+                  anchor: new google.maps.Point(17, 34),
+                  scaledSize: new google.maps.Size(25, 25)},
+        title:"Tag",
         content: fill,
         index: i
     });
@@ -260,7 +281,6 @@ function LoadInfoMarkers (TagPoints, map, obj, pre)
 
 
       //$(".map-canvas").on('click', '.tagggg', function(){
-          console.log("ok");
           //$("body").html("puta");
      //});
       //
@@ -324,24 +344,6 @@ function requestTags(minlat, maxlat, minlng, maxlng)
   <body>
    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map-canvas"></div>
-
-    <div class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        <p>One fine body&hellip;</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
   </body>
 </html>
