@@ -78,7 +78,7 @@ public class Application extends Controller {
             for(Usuario user : realGeo.usuarios){
                 if (user.id == id) {
                     Logger.info("trying double tag");
-                    return ok(toJson(realGeo));
+                    return ok(toJson(realGeo.id));
                 }
             }
 
@@ -100,7 +100,7 @@ public class Application extends Controller {
             }
             Logger.debug("UPDATED");
 
-            return ok(toJson(realGeo));
+            return ok(toJson(realGeo.id));
         } else {
             Geotag geo = new Geotag(g.lat, g.lon, id);
 
@@ -116,7 +116,7 @@ public class Application extends Controller {
             tree.addGeotag(geo);
 
             Logger.debug("SAVED");
-            return ok(toJson(geo));
+            return ok(toJson(geo.id));
         }
     }
 
