@@ -52,7 +52,7 @@ public class Application extends Controller {
         try {
             id = Long.parseLong(g.usuario);
         } catch (NumberFormatException e) {
-            Logger.error("Bad format of usuario");
+            Logger.error("Bad format of usuario:"+g.usuario);
             return badRequest();
         }
 
