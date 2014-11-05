@@ -172,18 +172,6 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var res = requestTags(minlat, maxlat, minlng, maxlng);
     //console.log(res);
 
-if(res != "nothing found")
-{
-
-  var obj = JSON.parse(res);
-  var tags = [];
-
-  console.log(obj.length);
-
-  for (var i = 0; i < obj.length; i++) {
-    tags[tags.length] = new google.maps.LatLng(obj[i].lat, obj[i].lon);
-  };
-
   var len;
 
   if (infomarkers==null)
@@ -201,6 +189,18 @@ if(res != "nothing found")
       infomarkers[i].setMap(null);
     }
   }
+
+if(res != "nothing found")
+{
+
+  var obj = JSON.parse(res);
+  var tags = [];
+
+  console.log(obj.length);
+
+  for (var i = 0; i < obj.length; i++) {
+    tags[tags.length] = new google.maps.LatLng(obj[i].lat, obj[i].lon);
+  };
 
   infomarkers = LoadInfoMarkers(tags, map, obj, infomarkers); 
   //console.log(cen.lat() + ", " + cen.lng());
@@ -235,7 +235,7 @@ function LoadInfoMarkers (TagPoints, map, obj, pre)
     {
       if(obj[i].photos.length < 1)
       {
-              fill = '<div class="tagggg" style ="height: 40px; width: 130px">Discapacidad <strong style="color:' + disc[0] + '">' + disc[1] + '</strong></div>';
+              fill = '<div class="tagggg" style ="height: 35px; width: 130px">Discapacidad <strong style="color:' + disc[0] + '">' + disc[1] + '</strong></div>';
 
       }else
       {
