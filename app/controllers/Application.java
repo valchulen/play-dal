@@ -51,8 +51,8 @@ public class Application extends Controller {
         Long id;
         try {
             String a = null;
-            if (g.usuario.length() > 20)
-                a = g.usuario.substring(0, 20);
+            if (g.usuario.length() >= 20)
+                a = g.usuario.substring(0, 19);
             else
                 a = g.usuario;
             id = Long.parseLong(a);
@@ -163,7 +163,14 @@ public class Application extends Controller {
     public static Result uploadMultipart () {
         long id = 0;
         try {
-            id = Long.parseLong(Form.form().bindFromRequest().get("id"));
+
+            String a = null;
+            String v = Form.form().bindFromRequest().get("id");
+            if (v.length() > 20)
+                a = v.substring(0, 20);
+            else
+                a = v;
+            id = Long.parseLong(a);
         } catch (Exception e) {
             Logger.debug("Bad format");
             return badRequest("bad id - 1");
