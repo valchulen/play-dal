@@ -172,24 +172,6 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var res = requestTags(minlat, maxlat, minlng, maxlng);
     //console.log(res);
 
-  var len;
-
-  if (infomarkers==null)
-  {
-    len=0;
-  }
-  else{
-    len=infomarkers.length;
-  }
-
-  for(var i=0; i<len; i++)
-  {
-    if (tags[i].lat != infomarkers[i][0].position.lat && tags[i].lng != infomarkers[i][0].position.lng)
-    {
-      infomarkers[i].setMap(null);
-    }
-  }
-
 if(res != "nothing found")
 {
 
@@ -201,6 +183,21 @@ if(res != "nothing found")
   for (var i = 0; i < obj.length; i++) {
     tags[tags.length] = new google.maps.LatLng(obj[i].lat, obj[i].lon);
   };
+
+  var len;
+
+  if (infomarkers==null)
+  {
+    len=0;
+  }
+  else{
+    len=infomarkers.length;
+  }
+
+  for(var i=tags.length; i<len; i++)
+  {
+      infomarkers[i].setMap(null);
+  }
 
   infomarkers = LoadInfoMarkers(tags, map, obj, infomarkers); 
   //console.log(cen.lat() + ", " + cen.lng());
