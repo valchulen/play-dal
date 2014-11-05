@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Simple Map</title>
+    <title>Ruedas Sin Fronteras</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <style>
@@ -55,6 +55,7 @@
       }
 }
     </style>
+    <link rel="shortcut icon" type="image/png" href="https://s3.amazonaws.com/com.valchu.ruedassinfronteras/27cb96eb-cd5f-4850-bbe6-dacb9b7e926b/ruedas sin fronteras logo.png">
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&sensor=true_or_false"></script>
 
     <!--<script type="text/javascript" src="javascripts/jquery-2.1.1.js"></script>
@@ -166,10 +167,13 @@ google.maps.event.addListener(map, 'idle', function(event) {
   var maxlat = (bounds.getNorthEast()).lat();
   var maxlng = (bounds.getNorthEast()).lng();
 
-  //var res = '[{"id":2,"lat":-34.12,"lon":-50.121,"usuarios":[{"id":1234567890}],"photos":["https://s3.amazonaws.com/com.valchu.ruedassinfronteras/b6cd8670-ce04-4e98-be0d-312bceecc5d2/IMG_0151.JPG"],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":3,"lat":15.0,"lon":4543.0,"usuarios":[{"id":12345678900}],"photos":[],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":4,"lat":45.0,"lon":45.0,"usuarios":[{"id":1234567890}],"photos":[],"incapacidad":"auditiva;|;motora;+;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":1,"lat":11.0,"lon":11.0,"usuarios":[{"id":111},{"id":1234567890},{"id":12345678900},{"id":120},{"id":1204},{"id":12345678901}],"photos":[],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":6},{"id":21,"lat":-36.71549987792969,"lon":-54.66600036621094,"usuarios":[{"id":1234}],"photos":[],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1}] ';
+  //var res = '[{"id":2,"lat":-34.12,"lon":-50.121,"usuarios":[{"id":1234567890}],"photos":["https://s3.amazonaws.com/com.valchu.ruedassinfronteras/b6cd8670-ce04-4e98-be0d-312bceecc5d2/IMG_0151.JPG"],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":3,"lat":15.0,"lon":4543.0,"usuarios":[{"id":12345678900}],"photos":[],"incapacidad":"auditiva;|;motora;|;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":4,"lat":45.0,"lon":45.0,"usuarios":[{"id":1234567890}],"photos":[],"incapacidad":"auditiva;|;motora;+;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1},{"id":1,"lat":11.0,"lon":11.0,"usuarios":[{"id":111},{"id":1234567890},{"id":12345678900},{"id":120},{"id":1204},{"id":12345678901}],"photos":[],"incapacidad":"auditiva;|;motora;-;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":6},{"id":21,"lat":-36.71549987792969,"lon":-54.66600036621094,"usuarios":[{"id":1234}],"photos":[],"incapacidad":"auditiva;|;motora;+;intelectual;|;visual;|;visceral;|;acondroplastia;|;","importancia":1}] ';
 
   var res = requestTags(minlat, maxlat, minlng, maxlng);
     //console.log(res);
+
+if(res != "nothing found")
+{
 
   var obj = JSON.parse(res);
   var tags = [];
@@ -200,7 +204,12 @@ google.maps.event.addListener(map, 'idle', function(event) {
 
   infomarkers = LoadInfoMarkers(tags, map, obj, infomarkers); 
   //console.log(cen.lat() + ", " + cen.lng());
-  });
+}
+else
+{
+  console.log("No tags within this range");
+}
+});
 
 }
 
@@ -220,28 +229,27 @@ function LoadInfoMarkers (TagPoints, map, obj, pre)
 
     coordMarker[i] = [];
 
-     var discapacidad = (obj[i].incapacidad.split('-'))[0].split(';')
-     var disc = discapacidad[discapacidad.length-2];
+     var disc = DescriptDisc(obj[i].incapacidad);
 
     if (obj[i].importancia < 2) 
     {
       if(obj[i].photos.length < 1)
       {
-              fill = '<div class="tagggg" style ="height: 40px; width: 130px">Discapacidad <strong>' + disc + '</strong></div>';
+              fill = '<div class="tagggg" style ="height: 40px; width: 130px">Discapacidad <strong style="color:' + disc[0] + '">' + disc[1] + '</strong></div>';
 
       }else
       {
-              fill = '<div class="tagggg" style ="height: 130px; width: 200px">Discapacidad <strong>' + disc + '</strong></br><img src="' + obj[i].photos[0] + '" alt="Pic" height="90" width="170"></div>';
+              fill = '<div class="tagggg" style ="height: 130px; width: 200px">Discapacidad <strong style="color:' + disc[0] + '">' + disc[1] + '</strong></br><img src="' + obj[i].photos[0] + '" alt="Pic" height="90" width="170"></div>';
       }
     }else
     { 
       if(obj[i].photos.length < 1)
       {
-              fill = '<div class="tagggg" style ="height: 50px; width: 130px">Discapacidad <strong>' + disc + '</strong> tageado por ' + obj[i].importancia + '</div>';
+              fill = '<div class="tagggg" style ="height: 50px; width: 130px">Discapacidad <strong style="color:' + disc[0] + '">' + disc[1] + '</strong> tageado por ' + obj[i].importancia + '</div>';
 
       }else
       {
-              fill = '<div class="tagggg" style ="height: 140px; width: 230px">Discapacidad <strong>' + disc + '</strong> tageado por ' + obj[i].importancia + '</br><img src="' + obj[i].photos[0] + '" alt="Pic" height="90" width="170"></div>';
+              fill = '<div class="tagggg" style ="height: 140px; width: 230px">Discapacidad <strong style="color:' + disc[0] + '">' + disc[1] + '</strong> tageado por ' + obj[i].importancia + '</br><img src="' + obj[i].photos[0] + '" alt="Pic" height="90" width="170"></div>';
       }
     }
       var mark = new google.maps.Marker({
@@ -320,6 +328,54 @@ function requestTags(minlat, maxlat, minlng, maxlng)
     xmlHttp.send(null);
     return xmlHttp.responseText;
 
+}
+
+function DescriptDisc(disca)
+{
+  var dis = [];
+  var comas = 0;
+  var str="";
+
+  for(var i=0; i<disca.length; i++)
+  {
+    if(comas>1)
+    {
+      comas=0;
+      dis[dis.length]=str;
+      str="";
+    }
+
+    if(disca.substr(i, 1) == ";")
+    {
+      comas++;
+    }
+
+    str+=disca.substr(i, 1);
+
+  }
+
+  var ind=123;
+
+  for(var i=0; i<dis.length; i++)
+  {
+    if(dis[i].substr(dis[i].length-2, 1) != "|")
+    {
+      ind=i;
+    }
+  }
+
+  if(ind==123)
+  {
+    return ["", "ninguna"];
+  }else{
+    if(dis[ind].substr(dis[ind].length-2, 1)=="-")
+    {
+     return ["red", dis[ind].substr(0, dis[ind].length-3)];
+    }else
+    {
+      return ["green", dis[ind].substr(0, dis[ind].length-3)];
+    }
+  }
 }
 
 /*function ContainsInBound(point, bounds)
